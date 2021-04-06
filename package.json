@@ -1,0 +1,12 @@
+{
+  "name": "Scaffoldzoi",
+  "version": "1.0.0",
+  "description": "Scaffoldzoid is a company that is a bridges between orange sellers and orange buyers. As an orange seller, I can register in Scaffoldzoid and be listed as an orange seller.",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "repository": "git@github.com:NavenduDuari/Scaffoldzoi-Inc.git",
+  "author": "Navendu Duari <navendu.mcs19.du@gmail.com>",
+  "license": "MIT"
+}
