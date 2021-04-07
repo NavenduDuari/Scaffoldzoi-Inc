@@ -7,7 +7,10 @@ export default {
   mongodbPass: process.env.MONGODB_ROOT_PASSWORD,
   mongodbURL: process.env.MONGODB_URL,
   mongodbDBName: process.env.MONGODB_DB_NAME,
-  userCollection: 'user',
-  rateCollection: 'rate',
+  collections: {
+    userCollection: 'user',
+    rateCollection: 'rate',
+  },
   port: process.env.PORT,
+  jwtSecret: process.env.JWT_SECRET,
 };
