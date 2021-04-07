@@ -3,8 +3,6 @@ import { Dependency, ApiResponse, ResponseType, AppDataKey } from '../utils/type
 import { User, Rate } from '../db/model';
 import { getRateChartEntity, deleteRateChartEntity } from '../db/operations';
 import { isObject } from '../utils/typeChecker';
-import { encryptPassword, comparePassword } from '../utils/password';
-import { sign } from '../utils/jwt';
 
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
   const resp: ApiResponse = {

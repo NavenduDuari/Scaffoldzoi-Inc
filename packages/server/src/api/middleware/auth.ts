@@ -7,14 +7,16 @@ export default (dependency: Dependency) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const authorizationHeader = req.headers.authorization;
-      if (!authorizationHeader) throw 'Token not present';
+      if (!authorizationHeader) {
+        throw 'Token not present';
+      }
 
       const token = req.headers.authorization.split(' ')[1];
-      console.log(token);
       const userCred = validate(token) as Credential;
       const userFromDB = await getUser(dependency, userCred.email);
-      console.log('userFromDB :: ', userFromDB);
-      if (!userFromDB) throw 'User not authorized';
+      if (!userFromDB) {
+        throw 'User not authorized';
+      }
       (req as any).setApplicationData(AppDataKey.LoggedInUser, userFromDB);
 
       next();

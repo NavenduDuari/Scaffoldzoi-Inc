@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Dependency, ApiResponse, ResponseType } from '../utils/types';
-import { getUser } from '../db/operations';
+import { getRateChart } from '../db/operations';
 
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
   const resp: ApiResponse = {
@@ -10,17 +10,22 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
     },
   };
 
-  const userEmail = req.body.email;
-
   try {
-    const userFromDB = await getUser(dependency, userEmail);
-
-    if (userFromDB) {
-      resp.status = ResponseType.Success;
-      resp.data = {
-        user: userFromDB,
-      };
+    const userEmail = req.body.email;
+    if (!userEmail) {
+      throw 'Insufficient parameter';
     }
+
+    const rateChart = await getRateChart(dependency, userEmail);
+
+    if (!rateChart) {
+      throw 'Rate chart not found';
+    }
+
+    resp.status = ResponseType.Success;
+    resp.data = {
+      rateChart,
+    };
   } catch (err) {
     console.error(err);
     resp.status = ResponseType.Error;

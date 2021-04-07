@@ -9,18 +9,23 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
       global: 'Something went wrong',
     },
   };
-  const userEmail = req.body.email;
-  console.log('getuser :: email :: ', userEmail);
 
   try {
+    const userEmail = req.body.email;
+    if (!userEmail) {
+      throw 'Insufficient parameter';
+    }
+
     const userFromDB = await getUser(dependency, userEmail);
 
-    if (userFromDB) {
-      resp.status = ResponseType.Success;
-      resp.data = {
-        user: userFromDB,
-      };
+    if (!userFromDB) {
+      throw 'User not found';
     }
+
+    resp.status = ResponseType.Success;
+    resp.data = {
+      user: userFromDB,
+    };
   } catch (err) {
     console.error(err);
     resp.status = ResponseType.Error;

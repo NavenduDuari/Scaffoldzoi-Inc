@@ -11,7 +11,6 @@ export const encryptPassword = async (plainPassword: string): Promise<string> =>
 };
 
 export const comparePassword = async (plainPassword: string, encryptedPassword: string): Promise<boolean> => {
-  console.log(plainPassword, encryptedPassword);
   const isValid = await bcrypt.compare(plainPassword, encryptedPassword);
   return isValid;
 };

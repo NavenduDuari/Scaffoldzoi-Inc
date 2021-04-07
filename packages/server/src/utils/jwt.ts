@@ -1,7 +1,6 @@
 import JWT from 'jsonwebtoken';
 import conf from './config';
 import { Credential } from './types';
-import { isObject } from './typeChecker';
 
 const options = { expiresIn: 86400 };
 const secret = conf.jwtSecret;

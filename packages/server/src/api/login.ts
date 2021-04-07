@@ -33,16 +33,19 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
       user.username = username || user.email;
       user.password = password;
       const userFromDB = await getUser(dependency, user.email);
-      console.log('userFromDB :: ', userFromDB);
       if (userFromDB) {
         //login
         const isValidPass = await comparePassword(user.password, userFromDB.password);
-        if (!isValidPass) throw 'Username and Password did not match';
+        if (!isValidPass) {
+          throw 'Username and Password did not match';
+        }
       } else {
         // signup
         user.password = await encryptPassword(user.password);
         const { result } = await insertUser(dependency, user);
-        if (!result.ok) throw 'Unable to insert user';
+        if (!result.ok) {
+          throw 'Unable to insert user';
+        }
       }
 
       resp.data.token = sign({ username: user.username, email: user.email, password: userFromDB.password });

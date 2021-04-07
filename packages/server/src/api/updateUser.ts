@@ -13,8 +13,6 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
   };
   if (isObject(req.body)) {
     try {
-      console.log('req body :: ', req.body);
-
       if (!req.body.email || !req.body.key || !req.body.value) {
         throw 'Insufficient parameter';
       }
@@ -24,7 +22,6 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
       const updatedValue = req.body.value;
 
       const updateResponse = await updateUser(dependency, userEmail, keyToUpdate, updatedValue);
-      console.log('updated :: ', updateResponse);
       if (!updateResponse.result.ok || updateResponse.result.nModified !== 1) {
         throw 'Unable to update';
       }
