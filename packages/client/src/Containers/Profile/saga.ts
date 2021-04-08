@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { takeLatest, put, call, take, fork, select } from 'redux-saga/effects';
 import { ActionTypes } from './types';
 import RequestManager, { ServiceConfigI } from '../../utils/request-manager';
@@ -15,11 +16,15 @@ function getUser() {
         data: {},
       } as ServiceConfigI);
 
-      const response: UserDetailsI = yield call(
+      const serviceResponse: AxiosResponse = yield call(
         requestManager.perform.bind(requestManager)
       );
 
-      console.log(response);
+      if (serviceResponse.status !== 200) {
+        throw new Error('Request failed');
+      }
+
+      console.log(serviceResponse);
     } catch (err) {
       console.error(err);
     }

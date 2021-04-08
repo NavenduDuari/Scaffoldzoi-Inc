@@ -24,14 +24,19 @@ class App extends React.Component<PropsI, ComponentStateI> {
 
   render() {
     return (
-      <Switch>
-        <Route exact path="/profile">
-          <Profile />
-        </Route>
-        <Route exact path="/login">
-          <Login performAuth={this.props.performAuth} />
-        </Route>
-      </Switch>
+      <Router>
+        <Switch>
+          <Route exact path="/profile">
+            <Profile />
+          </Route>
+          <Route exact path="/login">
+            <Login performAuth={this.props.performAuth} />
+          </Route>
+          <Route exact path="/">
+            <div>this is app</div>
+          </Route>
+        </Switch>
+      </Router>
     );
   }
 }

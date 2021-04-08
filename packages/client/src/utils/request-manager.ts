@@ -1,6 +1,7 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { LocalStorageKey } from './types';
 
-enum HttpMethod {
+export enum HttpMethod {
   Get = 'GET',
   Post = 'POST',
 }
@@ -23,12 +24,14 @@ export default class RequestManager {
   private constructor() {
     this.token = '';
     this.serviceConfig = {} as ServiceConfigI;
+    console.log('new requestManager');
   }
 
   public static getInstance() {
     if (!this.inst) {
       this.inst = new RequestManager();
     }
+    console.log('getInstance ::');
 
     return this.inst;
   }
@@ -40,7 +43,7 @@ export default class RequestManager {
   public addServiceConfig(serviceConfig: ServiceConfigI) {
     this.serviceConfig = {
       ...serviceConfig,
-      url: `http://localhost:8888/api/${serviceConfig.url}`,
+      url: `http://localhost:8888/api${serviceConfig.url}`,
       method: serviceConfig.method || HttpMethod.Get,
       data: {
         ts: Date.now(),
@@ -50,10 +53,11 @@ export default class RequestManager {
     };
   }
 
-  public perform(): Promise<any> {
+  public perform(): Promise<AxiosResponse> {
     return new Promise((resolve, reject) => {
       try {
         if (this.serviceConfig.authReq) {
+          console.log('perfrom :: ', this.token);
           if (!this.token) {
             console.log('NO auth token');
             reject();
@@ -67,7 +71,7 @@ export default class RequestManager {
 
         const req = this.serviceConfig;
 
-        axios(req as AxiosRequestConfig).then((resp) => {
+        axios(req as AxiosRequestConfig).then((resp: AxiosResponse) => {
           resolve(resp);
         });
       } catch (err) {

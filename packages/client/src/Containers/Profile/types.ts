@@ -10,7 +10,7 @@ export interface MapStateToPropsI {
 }
 
 export interface MapDispatchToPropsI {
-  getUser: () => void;
+  getUser: (email: string) => void;
 }
 
 export interface ComponentPropsI {}

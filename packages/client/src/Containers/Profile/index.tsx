@@ -16,7 +16,7 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
   }
 
   componentDidMount() {
-    this.props.getUser();
+    this.props.getUser('test1@mail.com');
   }
 
   render() {
@@ -34,7 +34,7 @@ const mapStateToProps = (state: StoreStateI): MapStateToPropsI => ({
 });
 
 const mapDispatchToProps = (dispatch: any): MapDispatchToPropsI => ({
-  getUser: () => dispatch(getUserAction()),
+  getUser: (email: string) => dispatch(getUserAction(email)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

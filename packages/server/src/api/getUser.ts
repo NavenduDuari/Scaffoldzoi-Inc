@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
-import { Dependency, ApiResponse, ResponseType } from '../utils/types';
+import { Dependency, ApiResponse, ResponseType, HttpStatusCode } from '../utils/types';
 import { getUser } from '../db/operations';
 
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
   const resp: ApiResponse = {
     status: ResponseType.Error,
+    statusCode: HttpStatusCode.BAD_REQUEST,
     data: {
       global: 'Something went wrong',
     },
@@ -25,16 +26,18 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
     }
 
     resp.status = ResponseType.Success;
+    resp.statusCode = HttpStatusCode.OK;
     resp.data = {
       user: userFromDB,
     };
   } catch (err) {
     console.error(err);
     resp.status = ResponseType.Error;
+    resp.statusCode = HttpStatusCode.BAD_REQUEST;
     resp.data = {
       global: 'DB error',
     };
   }
 
-  res.send(JSON.stringify(resp));
+  res.status(resp.statusCode).send(JSON.stringify(resp));
 };

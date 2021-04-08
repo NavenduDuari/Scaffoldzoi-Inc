@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Dependency, ApiResponse, ResponseType, AppDataKey } from '../utils/types';
+import { Dependency, ApiResponse, ResponseType, AppDataKey, HttpStatusCode } from '../utils/types';
 import { User, Rate } from '../db/model';
 import { getRate, deleteRate } from '../db/operations';
 import { isObject } from '../utils/typeChecker';
@@ -7,6 +7,7 @@ import { isObject } from '../utils/typeChecker';
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
   const resp: ApiResponse = {
     status: ResponseType.Error,
+    statusCode: HttpStatusCode.BAD_REQUEST,
     data: {
       global: 'Something went wrong',
     },
@@ -31,15 +32,17 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
       }
 
       resp.status = ResponseType.Success;
+      resp.statusCode = HttpStatusCode.OK;
       resp.data.global = 'Success';
     } catch (err) {
       console.error(err);
       resp.status = ResponseType.Error;
+      resp.statusCode = HttpStatusCode.BAD_REQUEST;
       resp.data = {
         global: 'DB Error',
       };
     }
   }
 
-  res.send(JSON.stringify(resp));
+  res.status(resp.statusCode).send(JSON.stringify(resp));
 };

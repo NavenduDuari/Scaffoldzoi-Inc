@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { validate } from '../../utils/jwt';
-import { ApiResponse, ResponseType, Credential, Dependency, AppDataKey } from '../../utils/types';
+import { ApiResponse, ResponseType, Credential, Dependency, AppDataKey, HttpStatusCode } from '../../utils/types';
 import { getUser } from '../../db/operations';
 
 export default (dependency: Dependency) => {
@@ -24,12 +24,13 @@ export default (dependency: Dependency) => {
       console.error(err);
       const resp: ApiResponse = {
         status: ResponseType.Error,
+        statusCode: HttpStatusCode.BAD_REQUEST,
         data: {
           global: 'User not authorized',
         },
       };
 
-      res.send(JSON.stringify(resp));
+      res.status(resp.statusCode).send(JSON.stringify(resp));
     }
   };
 };

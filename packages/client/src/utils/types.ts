@@ -10,3 +10,7 @@ export interface UserDetailsI {
   description: string;
   avatar: string;
 }
+
+export enum LocalStorageKey {
+  Token = '__scaffoldzoi-token__',
+}

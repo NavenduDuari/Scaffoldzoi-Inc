@@ -1,5 +1,3 @@
-import { UserDetailsI } from '../../utils/types';
-
 export enum ActionTypes {
   PERFORM_AUTH = 'perform-auth',
 }

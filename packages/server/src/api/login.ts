@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Dependency, ApiResponse, ResponseType, Credential } from '../utils/types';
+import { Dependency, ApiResponse, ResponseType, Credential, HttpStatusCode } from '../utils/types';
 import { User } from '../db/model';
 import { insertUser, getUser } from '../db/operations';
 import { isObject } from '../utils/typeChecker';
@@ -9,6 +9,7 @@ import { sign } from '../utils/jwt';
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
   const resp: ApiResponse = {
     status: ResponseType.Error,
+    statusCode: HttpStatusCode.BAD_REQUEST,
     data: {
       global: 'Something went wrong',
     },
@@ -22,14 +23,14 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
         createdAt: Date.now(),
         updatedAt: Date.now(),
       } as User;
+      console.log(req.body);
 
-      const { email, username, password } = req.body;
-      if (!email || !username || !password) {
+      const { email, password } = req.body.payload;
+      if (!email || !password) {
         throw 'Not sufficient data';
       }
 
       user.email = email;
-      user.username = username || user.email;
       user.password = password;
       const userFromDB = await getUser(dependency, user.email);
       if (userFromDB) {
@@ -49,15 +50,17 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
 
       resp.data.token = sign({ username: user.username, email: user.email, password: userFromDB.password });
       resp.status = ResponseType.Success;
+      resp.statusCode = HttpStatusCode.OK;
       resp.data.global = 'Success';
     } catch (err) {
       console.error(err);
       resp.status = ResponseType.Error;
+      resp.statusCode = HttpStatusCode.BAD_REQUEST;
       resp.data = {
         global: 'DB Error',
       };
     }
   }
 
-  res.send(JSON.stringify(resp));
+  res.status(resp.statusCode).send(JSON.stringify(resp));
 };
