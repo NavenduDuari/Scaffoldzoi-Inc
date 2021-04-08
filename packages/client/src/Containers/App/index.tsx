@@ -13,6 +13,7 @@ import {
 } from './types';
 import { performAuthAction, loadLocalTokenAction } from './action';
 import { GlobalStateI } from '../../rootReducer';
+import Header from '../../Components/Header/index';
 
 const mapStateToProps = (globalState: GlobalStateI): MapStateToPropsI => {
   const state = globalState.appReducer;
@@ -38,37 +39,43 @@ class App extends React.Component<PropsI, ComponentStateI> {
   }
 
   render() {
-    console.log('token :: ', this.props.token);
     return (
-      <Router>
-        <Switch>
-          <Route exact path="/profile">
-            <Profile />
-          </Route>
-          <Route
-            exact
-            path="/login"
-            render={(routeProps) => (
-              <div>
-                <div onClick={() => routeProps.history.push('/profile')}>
-                  this is app
-                </div>
+      <>
+        <Header />
+        <Router>
+          <Switch>
+            <Route
+              exact
+              path="/profile/:id"
+              render={(routeProps) => {
+                const profileId = routeProps.match.params.id;
+                return <Profile profileId={profileId} />;
+              }}
+            />
+            <Route
+              exact
+              path="/login"
+              render={(routeProps) => (
+                <Login
+                  componentTitle="Login"
+                  performAuth={this.props.performAuth}
+                />
+              )}
+            />
 
-                <Login performAuth={this.props.performAuth} />
-              </div>
-            )}
-          />
-          <Route
-            exact
-            path="/"
-            render={(routeProps) => (
-              <div onClick={() => routeProps.history.push('/profile')}>
-                this is app
-              </div>
-            )}
-          />
-        </Switch>
-      </Router>
+            <Route
+              exact
+              path="/signup"
+              render={(routeProps) => (
+                <Login
+                  componentTitle="Signup"
+                  performAuth={this.props.performAuth}
+                />
+              )}
+            />
+          </Switch>
+        </Router>
+      </>
     );
   }
 }

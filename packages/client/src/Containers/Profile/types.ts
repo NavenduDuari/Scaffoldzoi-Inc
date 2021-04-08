@@ -14,7 +14,9 @@ export interface MapDispatchToPropsI {
   getUser: (email: string) => void;
 }
 
-export interface ComponentPropsI {}
+export interface ComponentPropsI {
+  profileId: string;
+}
 
 export type PropsI = MapStateToPropsI & MapDispatchToPropsI & ComponentPropsI;
 
