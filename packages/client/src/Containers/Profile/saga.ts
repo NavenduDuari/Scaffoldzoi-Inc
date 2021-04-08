@@ -1,29 +1,33 @@
 import { AxiosResponse } from 'axios';
 import { takeLatest, put, call, take, fork, select } from 'redux-saga/effects';
 import { ActionTypes } from './types';
-import RequestManager, { ServiceConfigI } from '../../utils/request-manager';
-import { UserDetailsI } from '../../utils/types';
+import requestManager, { ServiceConfigI } from '../../utils/request-manager';
+import { Action, UserDetailsI } from '../../utils/types';
+import { onReceiveUserAction } from './action';
 
 function getUser() {
-  return function* (action: any) {
+  return function* (action: Action<ActionTypes>) {
     try {
       console.log(action);
-      const requestManager = RequestManager.getInstance();
 
       requestManager.addServiceConfig({
         url: '/getuser',
         authReq: true,
-        data: {},
+        data: {
+          email: action.payload?.email,
+        },
       } as ServiceConfigI);
 
       const serviceResponse: AxiosResponse = yield call(
         requestManager.perform.bind(requestManager)
       );
 
-      if (serviceResponse.status !== 200) {
+      const user = serviceResponse.data.data?.user;
+      if (serviceResponse.status !== 200 && !user) {
         throw new Error('Request failed');
       }
 
+      yield put(onReceiveUserAction(user));
       console.log(serviceResponse);
     } catch (err) {
       console.error(err);

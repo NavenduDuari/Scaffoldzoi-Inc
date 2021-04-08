@@ -11,15 +11,14 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
     },
   };
 
-  console.log('body :: ', req.body);
-
   try {
-    const userEmail = req.body.email;
-    if (!userEmail) {
+    const payload = JSON.parse(req.query.payload as string);
+    const { email } = payload;
+    if (!email) {
       throw 'Insufficient parameter';
     }
 
-    const userFromDB = await getUser(dependency, userEmail);
+    const userFromDB = await getUser(dependency, email);
 
     if (!userFromDB) {
       throw 'User not found';

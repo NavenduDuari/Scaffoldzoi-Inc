@@ -1,16 +1,17 @@
-import { UserDetailsI } from '../../utils/types';
+import { Action, UserDetailsI } from '../../utils/types';
 import { ActionTypes, StoreStateI } from './types';
 
 const INITIAL_STATE: StoreStateI = {
   userDetails: {} as UserDetailsI,
 };
 
-const reducer = (state = INITIAL_STATE, action: any) => {
+const profileReducer = (state = INITIAL_STATE, action: Action<ActionTypes>) => {
   switch (action.type) {
-    case ActionTypes.GET_USER:
+    case ActionTypes.ON_RECEIVE_USER:
+      console.log('state :: updating userDetails');
       return {
         ...state,
-        userDetails: {},
+        userDetails: action.payload?.user || {},
       };
 
     default:
@@ -18,4 +19,4 @@ const reducer = (state = INITIAL_STATE, action: any) => {
   }
 };
 
-export default reducer;
+export default profileReducer;

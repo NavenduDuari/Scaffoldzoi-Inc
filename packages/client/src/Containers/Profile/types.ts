@@ -2,6 +2,7 @@ import { UserDetailsI } from '../../utils/types';
 
 export enum ActionTypes {
   GET_USER = 'get-user',
+  ON_RECEIVE_USER = 'on-receive-user',
   UPDATE_DESCRIPTION = 'update-description',
 }
 

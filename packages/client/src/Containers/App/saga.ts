@@ -1,17 +1,17 @@
 import { takeLatest, put, call, take, fork, select } from 'redux-saga/effects';
 import { AxiosResponse } from 'axios';
-import RequestManager, {
+import requestManager, {
   HttpMethod,
   ServiceConfigI,
 } from '../../utils/request-manager';
 import { ActionTypes } from './types';
-import { LocalStorageKey } from '../../utils/types';
+import { LocalStorageKey, Action } from '../../utils/types';
+import { onLoadLocalTokenAction } from './action';
 
 function performAuth() {
-  return function* (action: any) {
+  return function* (action: Action<ActionTypes>) {
     try {
       console.log(action);
-      const requestManager = RequestManager.getInstance();
 
       requestManager.addServiceConfig({
         url: '/login',
@@ -32,7 +32,7 @@ function performAuth() {
 
       localStorage.setItem(LocalStorageKey.Token, token);
 
-      requestManager.addToken(token);
+      requestManager.addToken.call(requestManager, token);
 
       const r = localStorage.getItem(LocalStorageKey.Token);
 
@@ -43,6 +43,16 @@ function performAuth() {
   };
 }
 
+function loadLocalToken() {
+  return function* (action: Action<ActionTypes>) {
+    const token = localStorage.getItem(LocalStorageKey.Token) || '';
+    requestManager.addToken.call(requestManager, token);
+    console.log('loaded token from local');
+    yield put(onLoadLocalTokenAction(token));
+  };
+}
+
 export default function* appSaga() {
   yield takeLatest(ActionTypes.PERFORM_AUTH, performAuth());
+  yield takeLatest(ActionTypes.LOAD_LOCAL_TOKEN, loadLocalToken());
 }

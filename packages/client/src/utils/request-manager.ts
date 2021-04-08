@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { LocalStorageKey } from './types';
 
 export enum HttpMethod {
   Get = 'GET',
@@ -10,11 +9,12 @@ export interface ServiceConfigI {
   url: string;
   method?: HttpMethod;
   authReq: boolean;
-  data: Record<string, any>;
+  data?: Record<string, any>;
+  params?: Record<string, any>;
   headers?: Record<string, string>;
 }
 
-export default class RequestManager {
+class RequestManager {
   private static inst: RequestManager;
 
   private token: string;
@@ -27,34 +27,46 @@ export default class RequestManager {
     console.log('new requestManager');
   }
 
-  public static getInstance() {
-    if (!this.inst) {
-      this.inst = new RequestManager();
+  public static getInstance(): RequestManager {
+    if (!RequestManager.inst) {
+      console.log('no inst present');
+      RequestManager.inst = new RequestManager();
     }
-    console.log('getInstance ::');
 
-    return this.inst;
+    return RequestManager.inst;
   }
 
-  public addToken(token: string) {
+  public addToken = (token: string) => {
     this.token = token;
-  }
+    console.log('adding the token', this.token);
+  };
 
-  public addServiceConfig(serviceConfig: ServiceConfigI) {
+  public addServiceConfig = (serviceConfig: ServiceConfigI) => {
+    const method = serviceConfig.method || HttpMethod.Get;
     this.serviceConfig = {
       ...serviceConfig,
       url: `http://localhost:8888/api${serviceConfig.url}`,
-      method: serviceConfig.method || HttpMethod.Get,
-      data: {
-        ts: Date.now(),
-        payload: serviceConfig.data,
-      },
+      method,
+      data:
+        method === HttpMethod.Post
+          ? {
+              ts: Date.now(),
+              payload: serviceConfig.data,
+            }
+          : undefined,
+      params:
+        method === HttpMethod.Get
+          ? {
+              ts: Date.now(),
+              payload: JSON.stringify(serviceConfig.data),
+            }
+          : undefined,
       headers: serviceConfig.headers || {},
     };
-  }
+  };
 
-  public perform(): Promise<AxiosResponse> {
-    return new Promise((resolve, reject) => {
+  public perform = (): Promise<AxiosResponse> =>
+    new Promise((resolve, reject) => {
       try {
         if (this.serviceConfig.authReq) {
           console.log('perfrom :: ', this.token);
@@ -65,7 +77,7 @@ export default class RequestManager {
             if (!this.serviceConfig.headers) {
               this.serviceConfig.headers = {};
             }
-            this.serviceConfig.headers.Authorization = this.token;
+            this.serviceConfig.headers.Authorization = `Bearer ${this.token}`;
           }
         }
 
@@ -79,5 +91,6 @@ export default class RequestManager {
         reject(err);
       }
     });
-  }
 }
+
+export default RequestManager.getInstance();

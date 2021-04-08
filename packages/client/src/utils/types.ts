@@ -1,14 +1,16 @@
 export interface Action<T> {
   type: T;
-  payload: any;
+  payload?: Record<string, any>;
 }
 
 export interface UserDetailsI {
-  id: string;
+  _id: string;
   email: string;
   username: string;
   description: string;
   avatar: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export enum LocalStorageKey {

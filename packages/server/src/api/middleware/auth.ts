@@ -11,8 +11,11 @@ export default (dependency: Dependency) => {
         throw 'Token not present';
       }
 
+      console.log('auth hearder ::', req.headers.authorization);
       const token = req.headers.authorization.split(' ')[1];
+      console.log('token ::', token);
       const userCred = validate(token) as Credential;
+      console.log('user cred :: ', userCred);
       const userFromDB = await getUser(dependency, userCred.email);
       if (!userFromDB) {
         throw 'User not authorized';

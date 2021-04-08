@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { GlobalStateI } from '../../rootReducer';
 import { getUserAction } from './action';
 import {
   MapDispatchToPropsI,
@@ -8,6 +9,17 @@ import {
   ComponentStateI,
   StoreStateI,
 } from './types';
+
+const mapStateToProps = (globalState: GlobalStateI): MapStateToPropsI => {
+  const state = globalState.profileReducer;
+  return {
+    userDetails: state.userDetails,
+  };
+};
+
+const mapDispatchToProps = (dispatch: any): MapDispatchToPropsI => ({
+  getUser: (email: string) => dispatch(getUserAction(email)),
+});
 
 class Profile extends React.Component<PropsI, ComponentStateI> {
   constructor(props: PropsI) {
@@ -19,22 +31,20 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
     this.props.getUser('test1@mail.com');
   }
 
+  componentDidUpdate() {
+    console.log(this.props.userDetails);
+  }
+
   render() {
     console.log(this.props.userDetails);
     return (
       <div>
-        <div>Profile Loads Here</div>
+        <div onClick={() => console.log(this.props.userDetails)}>
+          Profile Loads Here
+        </div>
       </div>
     );
   }
 }
-
-const mapStateToProps = (state: StoreStateI): MapStateToPropsI => ({
-  userDetails: state.userDetails,
-});
-
-const mapDispatchToProps = (dispatch: any): MapDispatchToPropsI => ({
-  getUser: (email: string) => dispatch(getUserAction(email)),
-});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
