@@ -1,7 +1,7 @@
 import { Dependency } from '../utils/types';
 import conf from '../utils/config';
 import { User, Rate } from './model';
-import { InsertOneWriteOpResult, UpdateWriteOpResult } from 'mongodb';
+import { InsertOneWriteOpResult, ObjectID, UpdateWriteOpResult } from 'mongodb';
 
 export const createRequiredCollections = (dependency: Dependency): Promise<void> => {
   return new Promise(async (resolve, reject) => {
@@ -26,7 +26,7 @@ export const insertUser = (dependency: Dependency, user: User): Promise<InsertOn
 export const updateUser = (
   dependency: Dependency,
   email: string,
-  keyToUpdate: string,
+  path: string[],
   updatedValue: any,
 ): Promise<UpdateWriteOpResult> => {
   const DB = dependency.mongoClient.db(conf.mongodbDBName);
@@ -34,7 +34,17 @@ export const updateUser = (
   const query = { email };
 
   const newValue = {};
-  newValue[keyToUpdate] = updatedValue;
+  let targetObj = newValue;
+  for (let i = 0; i < path.length; i++) {
+    const key = path[i];
+    if (i === path.length - 1) {
+      targetObj[key] = updatedValue;
+    } else {
+      targetObj[key] = {};
+      targetObj = targetObj[key];
+    }
+  }
+
   return userCollection.updateOne(query, {
     $set: newValue,
   });
@@ -52,10 +62,10 @@ export const insertRateRow = (dependency: Dependency, rateRow: Rate): Promise<In
   return userCollection.insertOne(rateRow);
 };
 
-export const getRateChartEntity = (dependency: Dependency, id: string): Promise<any> => {
+export const getRate = (dependency: Dependency, id: string): Promise<any> => {
   const DB = dependency.mongoClient.db(conf.mongodbDBName);
   const userCollection = DB.collection(conf.collections.rateCollection);
-  return userCollection.findOne({ _id: id });
+  return userCollection.findOne({ _id: new ObjectID(id) });
 };
 
 export const getRateChart = (dependency: Dependency, email: string): Promise<any> => {
@@ -64,24 +74,34 @@ export const getRateChart = (dependency: Dependency, email: string): Promise<any
   return userCollection.find({ email }).toArray();
 };
 
-export const deleteRateChartEntity = (dependency: Dependency, id: string): Promise<any> => {
+export const deleteRate = (dependency: Dependency, id: string): Promise<any> => {
   const DB = dependency.mongoClient.db(conf.mongodbDBName);
   const userCollection = DB.collection(conf.collections.rateCollection);
-  return userCollection.deleteOne({ _id: id });
+  return userCollection.deleteOne({ _id: new ObjectID(id) });
 };
 
-export const updateRateChartEntity = (
+export const updateRate = (
   dependency: Dependency,
-  email: string,
-  keyToUpdate: string,
+  id: string,
+  path: string[],
   updatedValue: any,
 ): Promise<UpdateWriteOpResult> => {
   const DB = dependency.mongoClient.db(conf.mongodbDBName);
   const userCollection = DB.collection(conf.collections.rateCollection);
-  const query = { email };
+  const query = { _id: new ObjectID(id) };
 
   const newValue = {};
-  newValue[keyToUpdate] = updatedValue;
+  let targetObj = newValue;
+  for (let i = 0; i < path.length; i++) {
+    const key = path[i];
+    if (i === path.length - 1) {
+      targetObj[key] = updatedValue;
+    } else {
+      targetObj[key] = {};
+      targetObj = targetObj[key];
+    }
+  }
+
   return userCollection.updateOne(query, {
     $set: newValue,
   });

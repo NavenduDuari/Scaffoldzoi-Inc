@@ -15,7 +15,6 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
   };
   if (isObject(req.body)) {
     try {
-      console.log('payload :: ', req.body);
       const user = {
         username: '',
         email: '',

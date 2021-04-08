@@ -17,7 +17,7 @@ export default (dependency: Dependency) => {
       if (!userFromDB) {
         throw 'User not authorized';
       }
-      (req as any).setApplicationData(AppDataKey.LoggedInUser, userFromDB);
+      req[AppDataKey.LoggedInUser] = userFromDB;
 
       next();
     } catch (err) {

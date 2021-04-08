@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { Dependency, ApiResponse, ResponseType, AppDataKey } from '../utils/types';
 import { User, Rate } from '../db/model';
-import { updateRateChartEntity, getRateChartEntity } from '../db/operations';
-import { isObject } from '../utils/typeChecker';
+import { updateRate, getRate } from '../db/operations';
+import { isObject, isArray } from '../utils/typeChecker';
 
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
   const resp: ApiResponse = {
@@ -15,19 +15,19 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
     try {
       console.log('req body :: ', req.body);
 
-      const { id, key, value } = req.body;
-      if (!id || !key || !value) {
+      const { id, path, value } = req.body;
+      if (!id || !isArray(path) || !value) {
         throw 'Insufficient parameter';
       }
 
-      const loggedInUser = (req as any).getApplicationData(AppDataKey.LoggedInUser) as User;
-      const rateRow = (await getRateChartEntity(dependency, id)) as Rate;
+      const loggedInUser = req[AppDataKey.LoggedInUser] as User;
+      const rateRow = (await getRate(dependency, id)) as Rate;
 
       if (rateRow.email !== loggedInUser.email) {
         throw 'User not allowed to update entry';
       }
 
-      const updateResponse = await updateRateChartEntity(dependency, id, key, value);
+      const updateResponse = await updateRate(dependency, id, path, value);
       console.log('updated rate :: ', updateResponse);
       if (!updateResponse.result.ok || updateResponse.result.nModified !== 1) {
         throw 'Unable to update';

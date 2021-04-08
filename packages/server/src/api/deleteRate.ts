@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Dependency, ApiResponse, ResponseType, AppDataKey } from '../utils/types';
 import { User, Rate } from '../db/model';
-import { getRateChartEntity, deleteRateChartEntity } from '../db/operations';
+import { getRate, deleteRate } from '../db/operations';
 import { isObject } from '../utils/typeChecker';
 
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
@@ -13,22 +13,22 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
   };
   if (isObject(req.body)) {
     try {
-      console.log('payload :: ', req.body);
-
       const { id } = req.body;
       if (!id) {
         throw 'Not sufficient data';
       }
 
-      const loggedInUser = (req as any).getApplicationData(AppDataKey.LoggedInUser) as User;
-      const rateRow = (await getRateChartEntity(dependency, id)) as Rate;
+      const loggedInUser = req[AppDataKey.LoggedInUser] as User;
+      const rateRow = (await getRate(dependency, id)) as Rate;
 
       if (rateRow.email !== loggedInUser.email) {
         throw 'User not allowed to delete entry';
       }
 
-      const deleteResponse = await deleteRateChartEntity(dependency, id);
-      console.log('delete rate row :: ', deleteResponse);
+      const deleteResponse = await deleteRate(dependency, id);
+      if (!deleteResponse.result.ok || deleteResponse.result.n === 0) {
+        throw 'Delete ops failed';
+      }
 
       resp.status = ResponseType.Success;
       resp.data.global = 'Success';

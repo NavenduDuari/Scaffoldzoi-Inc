@@ -21,5 +21,5 @@ export interface Credential {
 }
 
 export enum AppDataKey {
-  LoggedInUser = 'loggedInUser',
+  LoggedInUser = '__loggedInUser__',
 }

@@ -15,12 +15,12 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
     try {
       console.log('payload :: ', req.body);
       const { type, price, weightUnit, currency } = req.body;
-      if (!type || price || weightUnit || currency) {
+      if (!type || !price || !weightUnit || !currency) {
         throw 'Not sufficient data';
       }
 
       const rate = {} as Rate;
-      const loggedInUser = (req as any).getApplicationData(AppDataKey.LoggedInUser) as User;
+      const loggedInUser = req[AppDataKey.LoggedInUser] as User;
       rate.email = loggedInUser.email;
       rate.goodsMeta = {
         type,
@@ -29,7 +29,9 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
         currency,
       };
       const insertResponse = await insertRateRow(dependency, rate);
-      console.log('inserted rate :: ', insertResponse);
+      if (!insertResponse.result.ok || insertResponse.result.n === 0) {
+        throw 'Insertion falied';
+      }
 
       resp.status = ResponseType.Success;
       resp.data.global = 'Success';
