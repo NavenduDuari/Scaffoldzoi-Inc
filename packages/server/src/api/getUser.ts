@@ -10,6 +10,8 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
     },
   };
 
+  console.log('body :: ', req.body);
+
   try {
     const userEmail = req.body.email;
     if (!userEmail) {
