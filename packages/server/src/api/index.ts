@@ -8,6 +8,7 @@ import updateRate from './updateRate';
 import getRateChart from './getRateChart';
 import insertRate from './insertRate';
 import deleteRate from './deleteRate';
+import getAllSellers from './getAllSellers';
 
 export default (dependency: Dependency): IRouter => {
   const router = Router();
@@ -18,6 +19,10 @@ export default (dependency: Dependency): IRouter => {
 
   router.get('/getuser', auth(dependency), (req: Request, res: Response) => {
     getUser(req, res, dependency);
+  });
+
+  router.get('/getallsellers', auth(dependency), (req: Request, res: Response) => {
+    getAllSellers(req, res, dependency);
   });
 
   router.post('/updateuser', auth(dependency), (req: Request, res: Response) => {

@@ -4,6 +4,7 @@ import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
 import Button from 'antd/lib/button';
 import { ComponentPropsI, ComponentStateI } from './types';
+import Context from '../../Containers/App/appContext';
 
 const validateMessages = {
   required: '${label} is required!',
@@ -21,10 +22,7 @@ class Login extends Component<ComponentPropsI, ComponentStateI> {
   constructor(props: ComponentPropsI) {
     super(props);
 
-    this.state = {
-      email: '',
-      password: '',
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -32,12 +30,28 @@ class Login extends Component<ComponentPropsI, ComponentStateI> {
     /* this.props.performAuth('test1@mail.com', 'test1@pass'); */
   }
 
+  componentDidUpdate(prevProps: ComponentPropsI) {
+    if (!prevProps.token && this.props.token) {
+      this.context.redirectTo('/market');
+    }
+  }
+
   render() {
     return (
       <div className="login-container">
         <div className="login-card">
           <div className="title">Welcome</div>
-          <Form {...layout} validateMessages={validateMessages}>
+          <Form
+            {...layout}
+            validateMessages={validateMessages}
+            onFinish={(values: { email: string; password: string }) => {
+              console.log(values);
+              this.props.performAuth(values.email, values.password);
+            }}
+            onFinishFailed={(e: any) => {
+              console.log(e);
+            }}
+          >
             <Form.Item
               name="email"
               label="Email"
@@ -54,39 +68,63 @@ class Login extends Component<ComponentPropsI, ComponentStateI> {
             >
               <Input.Password />
             </Form.Item>
-            <Form.Item
-              name="confirm"
-              label="Confirm Password"
-              hasFeedback
-              dependencies={['password']}
-              rules={[
-                {
-                  required: true,
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(
-                      new Error(
-                        'The two passwords that you entered do not match!'
-                      )
-                    );
+            {this.props.componentTitle === 'Signup' && (
+              <Form.Item
+                name="confirm"
+                label="Confirm Password"
+                hasFeedback
+                dependencies={['password']}
+                rules={[
+                  {
+                    required: true,
                   },
-                }),
-              ]}
-            >
-              <Input.Password />
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error(
+                          'The two passwords that you entered do not match!'
+                        )
+                      );
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password />
+              </Form.Item>
+            )}
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+              <Button className="submit-btn" type="primary" htmlType="submit">
+                {this.props.componentTitle}
+              </Button>
             </Form.Item>
           </Form>
-          <Button className="submit-btn" type="primary">
-            {this.props.componentTitle}
-          </Button>
+          <div className="alternate-opt">
+            <div className="msg">
+              {this.props.componentTitle === 'Signup'
+                ? 'Already registered? '
+                : 'Not yet registered? '}
+              <div
+                className="next-url"
+                onClick={() => {
+                  const nextUrl = `/${
+                    this.props.componentTitle === 'Signup' ? 'login' : 'signup'
+                  }`;
+                  this.context.redirectTo(nextUrl);
+                }}
+              >
+                {this.props.componentTitle === 'Signup' ? 'Login' : 'Signup'}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 }
+
+Login.contextType = Context;
 
 export default Login;

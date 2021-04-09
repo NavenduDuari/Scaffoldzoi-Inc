@@ -56,6 +56,14 @@ export const getUser = (dependency: Dependency, email: string): Promise<any> => 
   return userCollection.findOne({ email });
 };
 
+export const getAllUsers = (dependency: Dependency, key: string, value: any): Promise<any> => {
+  const DB = dependency.mongoClient.db(conf.mongodbDBName);
+  const userCollection = DB.collection(conf.collections.userCollection);
+  const query = {};
+  query[key] = value;
+  return userCollection.find(query).toArray();
+};
+
 export const insertRateRow = (dependency: Dependency, rateRow: Rate): Promise<InsertOneWriteOpResult<any>> => {
   const DB = dependency.mongoClient.db(conf.mongodbDBName);
   const userCollection = DB.collection(conf.collections.rateCollection);

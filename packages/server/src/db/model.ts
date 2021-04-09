@@ -1,9 +1,15 @@
+export enum ProfileType {
+  Seller = 'seller',
+  Buyer = 'buyer',
+}
+
 export interface User {
   email: string;
   username: string;
   password: string;
   description: string;
   avatar: string;
+  profileType: ProfileType;
   createdAt: number;
   updatedAt: number;
 }
