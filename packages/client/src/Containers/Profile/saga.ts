@@ -1,9 +1,12 @@
 import { AxiosResponse } from 'axios';
 import { takeLatest, put, call, take, fork, select } from 'redux-saga/effects';
 import { ActionTypes } from './types';
-import requestManager, { ServiceConfigI } from '../../utils/request-manager';
+import requestManager, {
+  HttpMethod,
+  ServiceConfigI,
+} from '../../utils/request-manager';
 import { Action, UserDetailsI } from '../../utils/types';
-import { onReceiveUserAction } from './action';
+import { onReceiveRateChartAction, onReceiveUserAction } from './action';
 
 function getUser() {
   return function* (action: Action<ActionTypes>) {
@@ -13,9 +16,7 @@ function getUser() {
       requestManager.addServiceConfig({
         url: '/getuser',
         authReq: true,
-        data: {
-          email: action.payload?.email,
-        },
+        data: action.payload,
       } as ServiceConfigI);
 
       const serviceResponse: AxiosResponse = yield call(
@@ -35,6 +36,65 @@ function getUser() {
   };
 }
 
+function insertRate() {
+  return function* (action: Action<ActionTypes>) {
+    try {
+      console.log(action);
+
+      requestManager.addServiceConfig({
+        url: '/insertrate',
+        method: HttpMethod.Post,
+        authReq: true,
+        data: action.payload,
+      } as ServiceConfigI);
+
+      const serviceResponse: AxiosResponse = yield call(
+        requestManager.perform.bind(requestManager)
+      );
+
+      const rateChart = serviceResponse.data.data?.rateChart;
+      if (serviceResponse.status !== 200 && !rateChart) {
+        throw new Error('Request failed');
+      }
+
+      yield put(onReceiveRateChartAction(rateChart));
+      console.log(serviceResponse);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+}
+
+function getRateChart() {
+  return function* (action: Action<ActionTypes>) {
+    try {
+      console.log(action);
+
+      requestManager.addServiceConfig({
+        url: '/getratechart',
+        authReq: true,
+        data: action.payload,
+      } as ServiceConfigI);
+
+      const serviceResponse: AxiosResponse = yield call(
+        requestManager.perform.bind(requestManager)
+      );
+
+      const rateChart = serviceResponse.data.data?.rateChart;
+      if (serviceResponse.status !== 200 && !rateChart) {
+        throw new Error('Request failed');
+      }
+
+      yield put(onReceiveRateChartAction(rateChart));
+      console.log(serviceResponse);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+}
+
 export default function* profileSaga() {
   yield takeLatest(ActionTypes.GET_USER, getUser());
+  yield takeLatest(ActionTypes.GET_RATE_CHART, getRateChart());
+  yield takeLatest(ActionTypes.INSERT_RATE, insertRate());
 }

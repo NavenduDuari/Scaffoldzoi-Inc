@@ -1,8 +1,11 @@
+import { UserDetailsI } from '../../utils/types';
+
 export enum ActionTypes {
   PERFORM_AUTH = 'perform-auth',
   LOAD_LOCAL_TOKEN = 'load-local-token',
   ON_LOAD_LOCAL_TOKEN = 'on-load-local-token',
   GET_ALL_SELLERS = 'get-all-sellers',
+  ON_RECEIVE_ALL_SELLERS = 'on-receive-all-sellers',
   LOG_OUT = 'log-out',
 }
 
@@ -14,11 +17,13 @@ export enum TokenStatus {
 export interface MapStateToPropsI {
   token: string;
   tokenStatus: TokenStatus;
+  loggedInUser: UserDetailsI;
+  sellers: UserDetailsI[];
 }
 
 export interface MapDispatchToPropsI {
   loadLocalToken: () => void;
-  performAuth: (email: string, password: string) => void;
+  performAuth: (email: string, password: string, profileType: string) => void;
   getAllSellers: () => void;
   logOut: () => void;
 }
@@ -34,9 +39,12 @@ export interface ComponentStateI {
 export interface StoreStateI {
   token: string;
   tokenStatus: TokenStatus;
+  loggedInUser: UserDetailsI;
+  sellers: UserDetailsI[];
 }
 
 export interface ContextI {
   redirectTo: (url: string) => void;
   token: string;
+  loggedInUser: UserDetailsI;
 }

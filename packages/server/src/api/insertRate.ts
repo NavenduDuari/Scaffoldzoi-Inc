@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Dependency, ApiResponse, ResponseType, AppDataKey, HttpStatusCode } from '../utils/types';
-import { User, Rate } from '../db/model';
-import { insertRateRow } from '../db/operations';
+import { User, Rate, WeightUnit, Currency } from '../db/model';
+import { insertRate, getRateChart } from '../db/operations';
 import { isObject } from '../utils/typeChecker';
 
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
@@ -15,8 +15,8 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
   if (isObject(req.body)) {
     try {
       console.log('payload :: ', req.body);
-      const { type, price, weightUnit, currency } = req.body;
-      if (!type || !price || !weightUnit || !currency) {
+      const { orangeName, orangePrice } = req.body.payload;
+      if (!orangeName || !orangePrice) {
         throw 'Not sufficient data';
       }
 
@@ -24,19 +24,28 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
       const loggedInUser = req[AppDataKey.LoggedInUser] as User;
       rate.email = loggedInUser.email;
       rate.goodsMeta = {
-        type,
-        price,
-        weightUnit,
-        currency,
+        type: orangeName,
+        price: orangePrice,
+        weightUnit: WeightUnit.Kg, // hard-coded as of now
+        currency: Currency.INR, // hard-coded as of now
       };
-      const insertResponse = await insertRateRow(dependency, rate);
+
+      const insertResponse = await insertRate(dependency, rate);
       if (!insertResponse.result.ok || insertResponse.result.n === 0) {
         throw 'Insertion falied';
       }
 
+      const rateChart = await getRateChart(dependency, loggedInUser.email);
+
+      if (!rateChart) {
+        throw 'Rate chart not found';
+      }
+
       resp.status = ResponseType.Success;
       resp.statusCode = HttpStatusCode.OK;
-      resp.data.global = 'Success';
+      resp.data = {
+        rateChart,
+      };
     } catch (err) {
       console.error(err);
       resp.status = ResponseType.Error;

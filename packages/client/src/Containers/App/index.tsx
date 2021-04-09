@@ -27,21 +27,22 @@ import Profile from '../Profile/index';
 import Header from '../../Components/Header/index';
 import Market from '../../Components/Market/index';
 import Login from '../../Components/Login/index';
-import { UserDetailsI } from '../../utils/types';
 
 const mapStateToProps = (globalState: GlobalStateI): MapStateToPropsI => {
   const state = globalState.appReducer;
   return {
     token: state.token,
     tokenStatus: state.tokenStatus,
+    loggedInUser: state.loggedInUser,
+    sellers: state.sellers,
   };
 };
 
 const mapDispatchToProps = (dispatch: any): MapDispatchToPropsI => ({
   loadLocalToken: () => dispatch(loadLocalTokenAction()),
 
-  performAuth: (email: string, password: string) =>
-    dispatch(performAuthAction(email, password)),
+  performAuth: (email: string, password: string, profileType: string) =>
+    dispatch(performAuthAction(email, password, profileType)),
 
   getAllSellers: () => dispatch(getAllSellersAction()),
 
@@ -53,12 +54,9 @@ const redirectTo = (routeProps: RouteComponentProps, url: string) => {
 };
 
 class App extends React.Component<PropsI, ComponentStateI> {
-  constructor(props: PropsI) {
-    super(props);
-    this.state = {
-      redirectedToLoginPage: false,
-    };
-  }
+  /* constructor(props: PropsI) { */
+  /*   super(props); */
+  /* } */
 
   componentDidMount() {
     console.log('App mounted');
@@ -99,9 +97,18 @@ class App extends React.Component<PropsI, ComponentStateI> {
 
       <Route
         exact
-        path="/profile/:id"
+        path="/p/:id"
         render={(routeProps) => {
           const profileId = routeProps.match.params.id;
+          if (!this.props.token) {
+            return (
+              <Login
+                componentTitle="Signup"
+                performAuth={this.props.performAuth}
+                token={this.props.token}
+              />
+            );
+          }
           return <Profile profileId={profileId} />;
         }}
       />
@@ -109,12 +116,23 @@ class App extends React.Component<PropsI, ComponentStateI> {
       <Route
         exact
         path="/"
-        render={(routeProps) => (
-          <Market
-            getAllSellers={this.props.getAllSellers}
-            sellers={[] as UserDetailsI[]}
-          />
-        )}
+        render={(routeProps) => {
+          if (!this.props.token) {
+            return (
+              <Login
+                componentTitle="Signup"
+                performAuth={this.props.performAuth}
+                token={this.props.token}
+              />
+            );
+          }
+          return (
+            <Market
+              getAllSellers={this.props.getAllSellers}
+              sellers={this.props.sellers}
+            />
+          );
+        }}
       />
     </Switch>
   );
@@ -128,19 +146,21 @@ class App extends React.Component<PropsI, ComponentStateI> {
             <Route
               path="/"
               render={(routeProps) => {
-                if (
-                  this.props.tokenStatus === TokenStatus.Fetched &&
-                  !this.props.token &&
-                  !this.state.redirectedToLoginPage
-                ) {
-                  this.setState({ redirectedToLoginPage: true });
-                  redirectTo(routeProps, '/login');
-                }
+                /* if ( */
+                /*   this.props.tokenStatus === TokenStatus.Fetched && */
+                /*   !this.props.token && */
+                /*   !this.state.redirectedToLoginPage */
+                /* ) { */
+                /*   this.setState({ redirectedToLoginPage: true }); */
+                /*   redirectTo(routeProps, '/login'); */
+                /* } */
+                console.log('this is test');
                 return (
                   <AppContextProvider
                     value={{
                       redirectTo: (url: string) => redirectTo(routeProps, url),
                       token: this.props.token,
+                      loggedInUser: this.props.loggedInUser,
                     }}
                   >
                     <Header logOut={this.props.logOut} />

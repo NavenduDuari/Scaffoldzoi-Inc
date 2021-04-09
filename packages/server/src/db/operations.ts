@@ -50,10 +50,12 @@ export const updateUser = (
   });
 };
 
-export const getUser = (dependency: Dependency, email: string): Promise<any> => {
+export const getUser = (dependency: Dependency, key: string, value: any): Promise<any> => {
   const DB = dependency.mongoClient.db(conf.mongodbDBName);
   const userCollection = DB.collection(conf.collections.userCollection);
-  return userCollection.findOne({ email });
+  const query = {};
+  query[key] = key === '_id' ? new ObjectID(value) : value;
+  return userCollection.findOne(query);
 };
 
 export const getAllUsers = (dependency: Dependency, key: string, value: any): Promise<any> => {
@@ -64,7 +66,7 @@ export const getAllUsers = (dependency: Dependency, key: string, value: any): Pr
   return userCollection.find(query).toArray();
 };
 
-export const insertRateRow = (dependency: Dependency, rateRow: Rate): Promise<InsertOneWriteOpResult<any>> => {
+export const insertRate = (dependency: Dependency, rateRow: Rate): Promise<InsertOneWriteOpResult<any>> => {
   const DB = dependency.mongoClient.db(conf.mongodbDBName);
   const userCollection = DB.collection(conf.collections.rateCollection);
   return userCollection.insertOne(rateRow);

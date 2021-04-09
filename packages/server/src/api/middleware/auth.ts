@@ -16,7 +16,9 @@ export default (dependency: Dependency) => {
       console.log('token ::', token);
       const userCred = validate(token) as Credential;
       console.log('user cred :: ', userCred);
-      const userFromDB = await getUser(dependency, userCred.email);
+      const userFromDB = await getUser(dependency, 'email', userCred.email);
+
+      console.log('user from Db :: ', userFromDB);
       if (!userFromDB) {
         throw 'User not authorized';
       }

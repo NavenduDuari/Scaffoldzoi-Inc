@@ -1,5 +1,5 @@
 export interface ComponentPropsI {
-  performAuth: (email: string, password: string) => void;
+  performAuth: (email: string, password: string, profileType: string) => void;
   componentTitle: 'Login' | 'Signup';
   token: string;
 }

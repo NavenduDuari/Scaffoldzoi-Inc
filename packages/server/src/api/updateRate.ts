@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Dependency, ApiResponse, ResponseType, AppDataKey, HttpStatusCode } from '../utils/types';
 import { User, Rate } from '../db/model';
-import { updateRate, getRate } from '../db/operations';
+import { updateRate, getRate, getRateChart } from '../db/operations';
 import { isObject, isArray } from '../utils/typeChecker';
 
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
@@ -34,10 +34,16 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
         throw 'Unable to update';
       }
 
+      const rateChart = await getRateChart(dependency, loggedInUser.email);
+
+      if (!rateChart) {
+        throw 'Rate chart not found';
+      }
+
       resp.status = ResponseType.Success;
       resp.statusCode = HttpStatusCode.OK;
       resp.data = {
-        global: 'Success',
+        rateChart,
       };
     } catch (err) {
       console.error(err);

@@ -3,6 +3,7 @@ import { ActionTypes, StoreStateI } from './types';
 
 const INITIAL_STATE: StoreStateI = {
   userDetails: {} as UserDetailsI,
+  rateChart: [],
 };
 
 const profileReducer = (state = INITIAL_STATE, action: Action<ActionTypes>) => {
@@ -12,6 +13,13 @@ const profileReducer = (state = INITIAL_STATE, action: Action<ActionTypes>) => {
       return {
         ...state,
         userDetails: action.payload?.user || {},
+      };
+
+    case ActionTypes.ON_RECEIVE_RATE_CHART:
+      console.log('state :: updating rateChart');
+      return {
+        ...state,
+        rateChart: action.payload?.rateChart || [],
       };
 
     default:

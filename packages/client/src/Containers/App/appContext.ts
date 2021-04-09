@@ -1,4 +1,5 @@
 import React from 'react';
+import { UserDetailsI } from '../../utils/types';
 import { ContextI } from './types';
 
 const AppContext = React.createContext<ContextI>({
@@ -6,6 +7,7 @@ const AppContext = React.createContext<ContextI>({
     /* no ops */
   },
   token: '',
+  loggedInUser: {} as UserDetailsI,
 });
 
 export const AppContextProvider = AppContext.Provider;

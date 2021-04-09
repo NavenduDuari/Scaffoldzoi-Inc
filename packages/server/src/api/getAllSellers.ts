@@ -13,8 +13,9 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
   };
 
   try {
-    const sellersFromDB = (await getAllUsers(dependency, 'profileType', ProfileType)) as User[];
+    const sellersFromDB = (await getAllUsers(dependency, 'profileType', ProfileType.Seller)) as User[];
 
+    console.log('getAllSellers :: ', sellersFromDB);
     if (!sellersFromDB) {
       throw 'Failed to fetch sellers';
     }
@@ -22,10 +23,8 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
     resp.status = ResponseType.Success;
     resp.statusCode = HttpStatusCode.OK;
     resp.data = {
-      users: sellersFromDB.map((seller) => {
+      sellers: sellersFromDB.map((seller) => {
         delete seller.password;
-        delete seller.createdAt;
-        delete seller.updatedAt;
         return seller;
       }),
     };

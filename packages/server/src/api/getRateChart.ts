@@ -12,12 +12,13 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
   };
 
   try {
-    const userEmail = req.body.email;
-    if (!userEmail) {
+    const payload = JSON.parse(req.query.payload as string);
+    const { email } = payload;
+    if (!email) {
       throw 'Insufficient parameter';
     }
 
-    const rateChart = await getRateChart(dependency, userEmail);
+    const rateChart = await getRateChart(dependency, email);
 
     if (!rateChart) {
       throw 'Rate chart not found';

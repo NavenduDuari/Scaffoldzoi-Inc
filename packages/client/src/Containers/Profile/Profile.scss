@@ -28,11 +28,70 @@
                     font-size: 15px;
                 }
             }
+
+            .password {
+                color: blue;
+                cursor: pointer;
+            }
         }
     }
 
     .rate-chart {
         height: 70%;
         width: 100%;
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            background: #eee;
+            height: 45px;
+            font-weight: 900;
+        }
+
+
+        .table-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            height: 45px;
+
+            .table-col {
+                width: 30%;
+            }
+
+            .ant-form {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+            }
+        }
+
+        .table-col {
+            width: 33%;
+            text-align: center;
+        }
+
+        .table-body {
+            height: calc(100% - 90px);
+            overflow: auto;
+
+
+            .table-row {
+                display: flex;
+                justify-content: space-around;
+                height: 40px;
+                align-items: center;
+            }
+        }
+
+        .table-body::-webkit-scrollbar {
+            width: 5px;
+        }
+        .table-body::-webkit-scrollbar-thumb{
+            background: #000;
+            border-radius: 50pc;
+        }
     }
 }

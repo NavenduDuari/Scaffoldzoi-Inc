@@ -14,18 +14,18 @@ export interface User {
   updatedAt: number;
 }
 
-enum WeightUnit {
+export enum WeightUnit {
   Kg = 'kg',
   Lbs = 'lbs',
 }
 
-enum Currency {
+export enum Currency {
   INR = 'inr',
   USD = 'usd',
   EUR = 'eur',
 }
 
-export interface GoodsMeta {
+export interface GoodsMetaI {
   type: string;
   price: number;
   weightUnit: WeightUnit;
@@ -34,5 +34,5 @@ export interface GoodsMeta {
 
 export interface Rate {
   email: string;
-  goodsMeta: GoodsMeta;
+  goodsMeta: GoodsMetaI;
 }

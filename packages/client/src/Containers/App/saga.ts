@@ -5,8 +5,8 @@ import requestManager, {
   ServiceConfigI,
 } from '../../utils/request-manager';
 import { ActionTypes } from './types';
-import { LocalStorageKey, Action } from '../../utils/types';
-import { onLoadLocalTokenAction } from './action';
+import { LocalStorageKey, Action, UserDetailsI } from '../../utils/types';
+import { onLoadLocalTokenAction, onReceiveAllSellersAction } from './action';
 
 function performAuth() {
   return function* (action: Action<ActionTypes>) {
@@ -24,20 +24,17 @@ function performAuth() {
         requestManager.perform.bind(requestManager)
       );
 
-      const { token } = serviceResponse.data.data;
+      const { token, loggedInUser } = serviceResponse.data.data;
 
       if (serviceResponse.status !== 200 && !token) {
         throw new Error('request failed');
       }
 
       localStorage.setItem(LocalStorageKey.Token, token);
+      localStorage.setItem(LocalStorageKey.LoggedInUser, loggedInUser);
 
       requestManager.addToken.call(requestManager, token);
-      yield put(onLoadLocalTokenAction(token));
-
-      const r = localStorage.getItem(LocalStorageKey.Token);
-
-      console.log(r);
+      yield put(onLoadLocalTokenAction(token, loggedInUser));
     } catch (err) {
       console.error(err);
     }
@@ -47,9 +44,11 @@ function performAuth() {
 function loadLocalToken() {
   return function* (action: Action<ActionTypes>) {
     const token = localStorage.getItem(LocalStorageKey.Token) || '';
+    const loggedInUser = (localStorage.getItem(LocalStorageKey.LoggedInUser) ||
+      {}) as UserDetailsI;
     requestManager.addToken.call(requestManager, token);
     console.log('loaded token from local');
-    yield put(onLoadLocalTokenAction(token));
+    yield put(onLoadLocalTokenAction(token, loggedInUser));
   };
 }
 
@@ -68,13 +67,13 @@ function getAllSellers() {
         requestManager.perform.bind(requestManager)
       );
 
-      const { token } = serviceResponse.data.data;
-
-      if (serviceResponse.status !== 200 && !token) {
+      const sellers = serviceResponse.data.data?.sellers;
+      if (serviceResponse.status !== 200 && Array.isArray(sellers)) {
         throw new Error('request failed');
       }
 
-      console.log(serviceResponse);
+      console.log(sellers);
+      yield put(onReceiveAllSellersAction(sellers));
     } catch (err) {
       console.error(err);
     }
@@ -84,8 +83,9 @@ function getAllSellers() {
 function logOut() {
   return function* (action: Action<ActionTypes>) {
     localStorage.removeItem(LocalStorageKey.Token);
+    localStorage.removeItem(LocalStorageKey.LoggedInUser);
     requestManager.addToken.call(requestManager, '');
-    yield put(onLoadLocalTokenAction(''));
+    yield put(onLoadLocalTokenAction('', {} as UserDetailsI));
   };
 }
 

@@ -4,22 +4,28 @@ import Avatar from 'antd/lib/avatar';
 import UserOutlined from '@ant-design/icons/UserOutlined';
 import { ComponentPropsI, ComponentStateI } from './types';
 import Context from '../../Containers/App/appContext';
+import { UserDetailsI } from '../../utils/types';
 
-const getSellerCard = (redirectTo: (url: string) => void) => (
-  <div
-    className="card-container"
-    onClick={() => {
-      console.log('card clicked');
-      redirectTo('/profile');
-    }}
-  >
-    <Avatar className="avatar" size={45} icon={<UserOutlined />} />
-    <div className="title-n-description">
-      <div className="name">Navendu -the orange seller</div>
-      <div className="description">this is description</div>
+const getSellersCard = (
+  sellers: UserDetailsI[],
+  redirectTo: (url: string) => void
+) =>
+  sellers.map((seller) => (
+    <div
+      className="card-container"
+      key={seller._id}
+      onClick={() => {
+        console.log('card clicked');
+        redirectTo(`/p/${seller._id}`);
+      }}
+    >
+      <Avatar className="avatar" size={45} icon={<UserOutlined />} />
+      <div className="title-n-description">
+        <div className="name">{seller.username}</div>
+        <div className="description">{seller.description}</div>
+      </div>
     </div>
-  </div>
-);
+  ));
 
 class Market extends Component<ComponentPropsI, ComponentStateI> {
   constructor(props: ComponentPropsI) {
@@ -31,12 +37,14 @@ class Market extends Component<ComponentPropsI, ComponentStateI> {
   componentDidMount() {
     console.log('market component did mount');
     // get all sellers
+    this.props.getAllSellers();
   }
 
   render() {
+    console.log(this.props.sellers);
     return (
       <div className="market-container">
-        {getSellerCard(this.context.redirectTo)}
+        {getSellersCard(this.props.sellers, this.context.redirectTo)}
       </div>
     );
   }

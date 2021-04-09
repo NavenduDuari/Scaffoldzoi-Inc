@@ -3,8 +3,12 @@ import './Login.scss';
 import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
 import Button from 'antd/lib/button';
+import Select from 'antd/lib/select';
 import { ComponentPropsI, ComponentStateI } from './types';
 import Context from '../../Containers/App/appContext';
+import { ProfileType } from '../../utils/types';
+
+const { Option } = Select;
 
 const validateMessages = {
   required: '${label} is required!',
@@ -44,9 +48,17 @@ class Login extends Component<ComponentPropsI, ComponentStateI> {
           <Form
             {...layout}
             validateMessages={validateMessages}
-            onFinish={(values: { email: string; password: string }) => {
+            onFinish={(values: {
+              email: string;
+              password: string;
+              profileType: string;
+            }) => {
               console.log(values);
-              this.props.performAuth(values.email, values.password);
+              this.props.performAuth(
+                values.email,
+                values.password,
+                values.profileType
+              );
             }}
             onFinishFailed={(e: any) => {
               console.log(e);
@@ -69,31 +81,44 @@ class Login extends Component<ComponentPropsI, ComponentStateI> {
               <Input.Password />
             </Form.Item>
             {this.props.componentTitle === 'Signup' && (
-              <Form.Item
-                name="confirm"
-                label="Confirm Password"
-                hasFeedback
-                dependencies={['password']}
-                rules={[
-                  {
-                    required: true,
-                  },
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (!value || getFieldValue('password') === value) {
-                        return Promise.resolve();
-                      }
-                      return Promise.reject(
-                        new Error(
-                          'The two passwords that you entered do not match!'
-                        )
-                      );
+              <>
+                <Form.Item
+                  name="confirm"
+                  label="Confirm Password"
+                  hasFeedback
+                  dependencies={['password']}
+                  rules={[
+                    {
+                      required: true,
                     },
-                  }),
-                ]}
-              >
-                <Input.Password />
-              </Form.Item>
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue('password') === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error(
+                            'The two passwords that you entered do not match!'
+                          )
+                        );
+                      },
+                    }),
+                  ]}
+                >
+                  <Input.Password />
+                </Form.Item>
+
+                <Form.Item
+                  name="profileType"
+                  label="ProfileType"
+                  rules={[{ required: true }]}
+                >
+                  <Select placeholder="You are a Buyer or a Seller?">
+                    <Option value={ProfileType.Buyer}>Buyer</Option>
+                    <Option value={ProfileType.Seller}>Seller</Option>
+                  </Select>
+                </Form.Item>
+              </>
             )}
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
               <Button className="submit-btn" type="primary" htmlType="submit">
