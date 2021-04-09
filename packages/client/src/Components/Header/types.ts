@@ -1,1 +1,3 @@
-export interface ComponentPropsI {}
+export interface ComponentPropsI {
+  logOut: () => void;
+}

@@ -1,0 +1,38 @@
+.profile-container {
+    height: calc(100% - 64px);
+    width: 100%;
+    padding: 30px 70px;
+
+    .profile-details {
+        height: 30%;
+        width: 100%;
+        padding: 20px;
+        display: flex;
+
+        .info {
+            margin-left: 50px;
+            width: 265px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+
+            div{
+                span {
+                    font-size: 16px;
+                    font-weight: 900;
+                    margin-right: 10px;
+                }
+
+                .edit-icon {
+                    margin-left: 10px;
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+
+    .rate-chart {
+        height: 70%;
+        width: 100%;
+    }
+}

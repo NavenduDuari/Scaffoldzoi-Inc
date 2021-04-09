@@ -81,8 +81,17 @@ function getAllSellers() {
   };
 }
 
+function logOut() {
+  return function* (action: Action<ActionTypes>) {
+    localStorage.removeItem(LocalStorageKey.Token);
+    requestManager.addToken.call(requestManager, '');
+    yield put(onLoadLocalTokenAction(''));
+  };
+}
+
 export default function* appSaga() {
   yield takeLatest(ActionTypes.PERFORM_AUTH, performAuth());
   yield takeLatest(ActionTypes.LOAD_LOCAL_TOKEN, loadLocalToken());
   yield takeLatest(ActionTypes.GET_ALL_SELLERS, getAllSellers());
+  yield takeLatest(ActionTypes.LOG_OUT, logOut());
 }

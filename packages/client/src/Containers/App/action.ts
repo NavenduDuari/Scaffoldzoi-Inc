@@ -26,3 +26,7 @@ export const onLoadLocalTokenAction = (token: string): Action<ActionTypes> => ({
 export const getAllSellersAction = (): Action<ActionTypes> => ({
   type: ActionTypes.GET_ALL_SELLERS,
 });
+
+export const logOutAction = (): Action<ActionTypes> => ({
+  type: ActionTypes.LOG_OUT,
+});

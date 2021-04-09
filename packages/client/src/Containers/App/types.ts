@@ -3,6 +3,7 @@ export enum ActionTypes {
   LOAD_LOCAL_TOKEN = 'load-local-token',
   ON_LOAD_LOCAL_TOKEN = 'on-load-local-token',
   GET_ALL_SELLERS = 'get-all-sellers',
+  LOG_OUT = 'log-out',
 }
 
 export enum TokenStatus {
@@ -19,6 +20,7 @@ export interface MapDispatchToPropsI {
   loadLocalToken: () => void;
   performAuth: (email: string, password: string) => void;
   getAllSellers: () => void;
+  logOut: () => void;
 }
 
 export interface ComponentPropsI {}

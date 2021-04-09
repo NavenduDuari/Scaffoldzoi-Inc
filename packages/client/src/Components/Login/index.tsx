@@ -32,7 +32,7 @@ class Login extends Component<ComponentPropsI, ComponentStateI> {
 
   componentDidUpdate(prevProps: ComponentPropsI) {
     if (!prevProps.token && this.props.token) {
-      this.context.redirectTo('/market');
+      this.context.redirectTo('/');
     }
   }
 

@@ -21,6 +21,7 @@ import {
   performAuthAction,
   loadLocalTokenAction,
   getAllSellersAction,
+  logOutAction,
 } from './action';
 import Profile from '../Profile/index';
 import Header from '../../Components/Header/index';
@@ -43,6 +44,8 @@ const mapDispatchToProps = (dispatch: any): MapDispatchToPropsI => ({
     dispatch(performAuthAction(email, password)),
 
   getAllSellers: () => dispatch(getAllSellersAction()),
+
+  logOut: () => dispatch(logOutAction()),
 });
 
 const redirectTo = (routeProps: RouteComponentProps, url: string) => {
@@ -105,7 +108,7 @@ class App extends React.Component<PropsI, ComponentStateI> {
 
       <Route
         exact
-        path="/market"
+        path="/"
         render={(routeProps) => (
           <Market
             getAllSellers={this.props.getAllSellers}
@@ -140,7 +143,7 @@ class App extends React.Component<PropsI, ComponentStateI> {
                       token: this.props.token,
                     }}
                   >
-                    <Header />
+                    <Header logOut={this.props.logOut} />
                     {this.appRoute()}
                   </AppContextProvider>
                 );
