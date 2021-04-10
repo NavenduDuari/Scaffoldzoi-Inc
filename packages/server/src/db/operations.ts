@@ -6,7 +6,8 @@ import { InsertOneWriteOpResult, ObjectID, UpdateWriteOpResult } from 'mongodb';
 export const createRequiredCollections = (dependency: Dependency): Promise<void> => {
   return new Promise(async (resolve, reject) => {
     try {
-      const DB = dependency.mongoClient.db(conf.mongodbDBName);
+      // const DB = dependency.mongoClient.db(conf.mongodbDBName);
+      const DB = dependency.mongoClient.db(conf.mLabDBName);
       DB.collection(conf.collections.userCollection);
       DB.collection(conf.collections.rateCollection);
       console.log('DB :: collections created');

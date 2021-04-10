@@ -34,14 +34,16 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
       let userFromDB = {} as User;
       user.email = email;
       if (purpose === LogInRoutePurpose.Login) {
+        //login
+        console.log('purpose :: login');
         user.password = password;
         userFromDB = await getUser(dependency, 'email', user.email);
-        if (userFromDB) {
-          //login
-          const isValidPass = await comparePassword(user.password, userFromDB.password);
-          if (!isValidPass) {
-            throw 'Username and Password did not match';
-          }
+        if (!userFromDB) {
+          throw 'User not present. Signup.';
+        }
+        const isValidPass = await comparePassword(user.password, userFromDB.password);
+        if (!isValidPass) {
+          throw 'Username and Password did not match';
         }
       } else if (purpose === LogInRoutePurpose.Signup) {
         // signup
@@ -58,7 +60,9 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
         }
       }
 
+      console.log('userFromDB :: ', userFromDB);
       const token = sign(userFromDB);
+      console.log('after signing');
       delete userFromDB.password;
       resp.status = ResponseType.Success;
       resp.statusCode = HttpStatusCode.OK;

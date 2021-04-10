@@ -5,8 +5,10 @@ dotenv.config();
 export default {
   mongodbUserName: process.env.MONGODB_ROOT_USERNAME,
   mongodbPass: process.env.MONGODB_ROOT_PASSWORD,
-  mongodbURL: process.env.MONGODB_URL,
   mongodbDBName: process.env.MONGODB_DB_NAME,
+  mLabUserName: process.env.MLAB_ROOT_USERNAME,
+  mLabPass: process.env.MLAB_ROOT_PASSWORD,
+  mLabDBName: process.env.MLAB_DB_NAME,
   collections: {
     userCollection: 'user',
     rateCollection: 'rate',
