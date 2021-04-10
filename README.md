@@ -1,31 +1,42 @@
-## TODO
-    * Show error on login/signup page
-    * Upload picture
-    * Change password
-    * Edit rates
+# [Click to see live](http://13.232.26.195/)
 
 ---
 
-## Client
-React.js
+### TODO
+- [ ] Show error on login/signup page
+- [ ] Upload picture
+- [ ] Change password
+- [ ] Edit rates
+- [ ] Unit Test
+- [ ] Considerations.md
 
-## Server
-Node.js
+---
 
-## Setup
+### Client
+- React.js
+- Redux.js
+- ant design
+
+### Server
+- Node.js
+
+### Database
+- MongoDb/mLab
+
+### Setup
 * rename the `.env-example` file to `.env` and fill the appropriate value to connect to MongoDB.
 ```
 cd Scaffoldzoi
 yarn
 ```
 
-## Run Server
+### Run Server
 ```
 cd packages/server
 yarn start
 ```
 
-## Run Client
+### Run Client
 ```
 cd packages/client
 yarn start
