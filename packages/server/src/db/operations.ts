@@ -3,11 +3,13 @@ import conf from '../utils/config';
 import { User, Rate } from './model';
 import { InsertOneWriteOpResult, ObjectID, UpdateWriteOpResult } from 'mongodb';
 
+const dbName = conf.mLabDBName;
+
 export const createRequiredCollections = (dependency: Dependency): Promise<void> => {
   return new Promise(async (resolve, reject) => {
     try {
       // const DB = dependency.mongoClient.db(conf.mongodbDBName);
-      const DB = dependency.mongoClient.db(conf.mLabDBName);
+      const DB = dependency.mongoClient.db(dbName);
       DB.collection(conf.collections.userCollection);
       DB.collection(conf.collections.rateCollection);
       console.log('DB :: collections created');
@@ -19,7 +21,7 @@ export const createRequiredCollections = (dependency: Dependency): Promise<void>
 };
 
 export const insertUser = (dependency: Dependency, user: User): Promise<InsertOneWriteOpResult<any>> => {
-  const DB = dependency.mongoClient.db(conf.mongodbDBName);
+  const DB = dependency.mongoClient.db(dbName);
   const userCollection = DB.collection(conf.collections.userCollection);
   return userCollection.insertOne(user);
 };
@@ -30,7 +32,7 @@ export const updateUser = (
   path: string[],
   updatedValue: any,
 ): Promise<UpdateWriteOpResult> => {
-  const DB = dependency.mongoClient.db(conf.mongodbDBName);
+  const DB = dependency.mongoClient.db(dbName);
   const userCollection = DB.collection(conf.collections.userCollection);
   const query = { _id: new ObjectID(id) };
 
@@ -52,7 +54,7 @@ export const updateUser = (
 };
 
 export const getUser = (dependency: Dependency, key: string, value: any): Promise<any> => {
-  const DB = dependency.mongoClient.db(conf.mongodbDBName);
+  const DB = dependency.mongoClient.db(dbName);
   const userCollection = DB.collection(conf.collections.userCollection);
   const query = {};
   query[key] = key === '_id' ? new ObjectID(value) : value;
@@ -60,7 +62,7 @@ export const getUser = (dependency: Dependency, key: string, value: any): Promis
 };
 
 export const getAllUsers = (dependency: Dependency, key: string, value: any): Promise<any> => {
-  const DB = dependency.mongoClient.db(conf.mongodbDBName);
+  const DB = dependency.mongoClient.db(dbName);
   const userCollection = DB.collection(conf.collections.userCollection);
   const query = {};
   query[key] = value;
@@ -68,25 +70,25 @@ export const getAllUsers = (dependency: Dependency, key: string, value: any): Pr
 };
 
 export const insertRate = (dependency: Dependency, rateRow: Rate): Promise<InsertOneWriteOpResult<any>> => {
-  const DB = dependency.mongoClient.db(conf.mongodbDBName);
+  const DB = dependency.mongoClient.db(dbName);
   const userCollection = DB.collection(conf.collections.rateCollection);
   return userCollection.insertOne(rateRow);
 };
 
 export const getRate = (dependency: Dependency, id: string): Promise<any> => {
-  const DB = dependency.mongoClient.db(conf.mongodbDBName);
+  const DB = dependency.mongoClient.db(dbName);
   const userCollection = DB.collection(conf.collections.rateCollection);
   return userCollection.findOne({ _id: new ObjectID(id) });
 };
 
 export const getRateChart = (dependency: Dependency, userId: string): Promise<any> => {
-  const DB = dependency.mongoClient.db(conf.mongodbDBName);
+  const DB = dependency.mongoClient.db(dbName);
   const userCollection = DB.collection(conf.collections.rateCollection);
   return userCollection.find({ userId }).toArray();
 };
 
 export const deleteRate = (dependency: Dependency, id: string): Promise<any> => {
-  const DB = dependency.mongoClient.db(conf.mongodbDBName);
+  const DB = dependency.mongoClient.db(dbName);
   const userCollection = DB.collection(conf.collections.rateCollection);
   return userCollection.deleteOne({ _id: new ObjectID(id) });
 };
@@ -97,7 +99,7 @@ export const updateRate = (
   path: string[],
   updatedValue: any,
 ): Promise<UpdateWriteOpResult> => {
-  const DB = dependency.mongoClient.db(conf.mongodbDBName);
+  const DB = dependency.mongoClient.db(dbName);
   const userCollection = DB.collection(conf.collections.rateCollection);
   const query = { _id: new ObjectID(id) };
 
