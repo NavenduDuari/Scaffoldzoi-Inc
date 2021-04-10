@@ -83,25 +83,35 @@ class App extends React.Component<PropsI, ComponentStateI> {
       <Route
         exact
         path="/login"
-        render={(routeProps: RouteComponentProps) => (
-          <Login
-            componentTitle="Login"
-            performAuth={this.props.performAuth}
-            token={this.props.token}
-          />
-        )}
+        render={(routeProps: RouteComponentProps) => {
+          if (this.props.token) {
+            return <Redirect to="/" />;
+          }
+          return (
+            <Login
+              componentTitle="Login"
+              performAuth={this.props.performAuth}
+              token={this.props.token}
+            />
+          );
+        }}
       />
 
       <Route
         exact
         path="/signup"
-        render={(routeProps) => (
-          <Login
-            componentTitle="Signup"
-            performAuth={this.props.performAuth}
-            token={this.props.token}
-          />
-        )}
+        render={(routeProps) => {
+          if (this.props.token) {
+            return <Redirect to="/" />;
+          }
+          return (
+            <Login
+              componentTitle="Signup"
+              performAuth={this.props.performAuth}
+              token={this.props.token}
+            />
+          );
+        }}
       />
 
       <Route
@@ -119,6 +129,11 @@ class App extends React.Component<PropsI, ComponentStateI> {
       <Route
         path="/"
         render={(routeProps) => {
+          console.log(
+            'about to load market :: ',
+            this.props.tokenStatus,
+            this.props.token
+          );
           if (!this.props.token) {
             return <Redirect to="/login" />;
           }
@@ -134,6 +149,11 @@ class App extends React.Component<PropsI, ComponentStateI> {
   );
 
   render() {
+    console.log('token :: ', this.props.token);
+
+    if (this.props.tokenStatus === TokenStatus.YetToFetch) {
+      return <></>;
+    }
     return (
       <>
         <Router>

@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import uri from '../uri';
 
 export enum HttpMethod {
   Get = 'GET',
@@ -42,7 +43,7 @@ class RequestManager {
     const method = serviceConfig.method || HttpMethod.Get;
     this.serviceConfig = {
       ...serviceConfig,
-      url: `http://localhost:8888/api${serviceConfig.url}`,
+      url: `${uri.serverBaseURL}/api${serviceConfig.url}`,
       method,
       data:
         method === HttpMethod.Post
