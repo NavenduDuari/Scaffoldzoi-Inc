@@ -47,3 +47,8 @@ export enum LocalStorageKey {
   Token = '__scaffoldzoi-token__',
   LoggedInUser = '__scaffoldzoi-logged-in-user__',
 }
+
+export enum LogInRoutePurpose {
+  Signup = 'signup',
+  Login = 'login',
+}

@@ -1,13 +1,15 @@
 import { ActionTypes } from './types';
-import { Action, UserDetailsI } from '../../utils/types';
+import { Action, UserDetailsI, LogInRoutePurpose } from '../../utils/types';
 
 export const performAuthAction = (
+  purpose: LogInRoutePurpose,
   email: string,
   password: string,
   profileType: string
 ): Action<ActionTypes> => ({
   type: ActionTypes.PERFORM_AUTH,
   payload: {
+    purpose,
     email,
     password,
     profileType,

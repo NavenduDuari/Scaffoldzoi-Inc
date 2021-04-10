@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Dependency, ApiResponse, ResponseType, HttpStatusCode } from '../utils/types';
 import { getRateChart } from '../db/operations';
+import { ObjectID } from 'mongodb';
 
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
   const resp: ApiResponse = {
@@ -13,12 +14,12 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
 
   try {
     const payload = JSON.parse(req.query.payload as string);
-    const { email } = payload;
-    if (!email) {
+    if (!payload.id) {
       throw 'Insufficient parameter';
     }
+    payload.id = new ObjectID(payload.id);
 
-    const rateChart = await getRateChart(dependency, email);
+    const rateChart = await getRateChart(dependency, payload.id);
 
     if (!rateChart) {
       throw 'Rate chart not found';

@@ -29,7 +29,6 @@ function getUser() {
       }
 
       yield put(onReceiveUserAction(user));
-      console.log(serviceResponse);
     } catch (err) {
       console.error(err);
     }
@@ -93,8 +92,38 @@ function getRateChart() {
   };
 }
 
+function updateUser() {
+  return function* (action: Action<ActionTypes>) {
+    try {
+      console.log(action);
+
+      requestManager.addServiceConfig({
+        url: '/updateuser',
+        method: HttpMethod.Post,
+        authReq: true,
+        data: action.payload,
+      } as ServiceConfigI);
+
+      const serviceResponse: AxiosResponse = yield call(
+        requestManager.perform.bind(requestManager)
+      );
+
+      const updatedUser = serviceResponse.data.data?.updatedUser;
+      if (serviceResponse.status !== 200 && !updatedUser) {
+        throw new Error('Request failed');
+      }
+
+      yield put(onReceiveUserAction(updatedUser));
+      console.log(serviceResponse);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+}
+
 export default function* profileSaga() {
   yield takeLatest(ActionTypes.GET_USER, getUser());
   yield takeLatest(ActionTypes.GET_RATE_CHART, getRateChart());
   yield takeLatest(ActionTypes.INSERT_RATE, insertRate());
+  yield takeLatest(ActionTypes.UPDATE_USER, updateUser());
 }

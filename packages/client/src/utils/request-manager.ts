@@ -24,12 +24,10 @@ class RequestManager {
   private constructor() {
     this.token = '';
     this.serviceConfig = {} as ServiceConfigI;
-    console.log('new requestManager');
   }
 
   public static getInstance(): RequestManager {
     if (!RequestManager.inst) {
-      console.log('no inst present');
       RequestManager.inst = new RequestManager();
     }
 
@@ -38,7 +36,6 @@ class RequestManager {
 
   public addToken = (token: string) => {
     this.token = token;
-    console.log('adding the token', this.token);
   };
 
   public addServiceConfig = (serviceConfig: ServiceConfigI) => {
@@ -69,7 +66,6 @@ class RequestManager {
     new Promise((resolve, reject) => {
       try {
         if (this.serviceConfig.authReq) {
-          console.log('perfrom :: ', this.token);
           if (!this.token) {
             console.log('NO auth token');
             reject();

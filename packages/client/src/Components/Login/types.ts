@@ -1,5 +1,11 @@
+import { LogInRoutePurpose } from '../../utils/types';
 export interface ComponentPropsI {
-  performAuth: (email: string, password: string, profileType: string) => void;
+  performAuth: (
+    purpose: LogInRoutePurpose,
+    email: string,
+    password: string,
+    profileType: string
+  ) => void;
   componentTitle: 'Login' | 'Signup';
   token: string;
 }

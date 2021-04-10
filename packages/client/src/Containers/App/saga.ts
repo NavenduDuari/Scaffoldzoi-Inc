@@ -31,7 +31,10 @@ function performAuth() {
       }
 
       localStorage.setItem(LocalStorageKey.Token, token);
-      localStorage.setItem(LocalStorageKey.LoggedInUser, loggedInUser);
+      localStorage.setItem(
+        LocalStorageKey.LoggedInUser,
+        JSON.stringify(loggedInUser)
+      );
 
       requestManager.addToken.call(requestManager, token);
       yield put(onLoadLocalTokenAction(token, loggedInUser));
@@ -44,10 +47,11 @@ function performAuth() {
 function loadLocalToken() {
   return function* (action: Action<ActionTypes>) {
     const token = localStorage.getItem(LocalStorageKey.Token) || '';
-    const loggedInUser = (localStorage.getItem(LocalStorageKey.LoggedInUser) ||
-      {}) as UserDetailsI;
+    const loggedInUser = JSON.parse(
+      localStorage.getItem(LocalStorageKey.LoggedInUser) || '{}'
+    ) as UserDetailsI;
+    console.log('load :: ', loggedInUser);
     requestManager.addToken.call(requestManager, token);
-    console.log('loaded token from local');
     yield put(onLoadLocalTokenAction(token, loggedInUser));
   };
 }
@@ -72,7 +76,6 @@ function getAllSellers() {
         throw new Error('request failed');
       }
 
-      console.log(sellers);
       yield put(onReceiveAllSellersAction(sellers));
     } catch (err) {
       console.error(err);

@@ -4,6 +4,7 @@ export enum ProfileType {
 }
 
 export interface User {
+  _id: string;
   email: string;
   username: string;
   password: string;
@@ -33,6 +34,6 @@ export interface GoodsMetaI {
 }
 
 export interface Rate {
-  email: string;
+  userId: string;
   goodsMeta: GoodsMetaI;
 }

@@ -6,7 +6,7 @@ import Button from 'antd/lib/button';
 import Select from 'antd/lib/select';
 import { ComponentPropsI, ComponentStateI } from './types';
 import Context from '../../Containers/App/appContext';
-import { ProfileType } from '../../utils/types';
+import { LogInRoutePurpose, ProfileType } from '../../utils/types';
 
 const { Option } = Select;
 
@@ -53,8 +53,12 @@ class Login extends Component<ComponentPropsI, ComponentStateI> {
               password: string;
               profileType: string;
             }) => {
-              console.log(values);
+              const purpose =
+                this.props.componentTitle === 'Login'
+                  ? LogInRoutePurpose.Login
+                  : LogInRoutePurpose.Signup;
               this.props.performAuth(
+                purpose,
                 values.email,
                 values.password,
                 values.profileType

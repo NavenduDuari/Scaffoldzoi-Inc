@@ -12,11 +12,11 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
       global: 'Something went wrong',
     },
   };
-  if (isObject(req.body)) {
+  if (isObject(req.body.payload)) {
     try {
-      console.log('req body :: ', req.body);
+      console.log('req body :: ', req.body.payload);
 
-      const { id, path, value } = req.body;
+      const { id, path, value } = req.body.payload;
       if (!id || !isArray(path) || !value) {
         throw 'Insufficient parameter';
       }
@@ -24,7 +24,7 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
       const loggedInUser = req[AppDataKey.LoggedInUser] as User;
       const rateRow = (await getRate(dependency, id)) as Rate;
 
-      if (rateRow.email !== loggedInUser.email) {
+      if (rateRow.userId !== loggedInUser._id) {
         throw 'User not allowed to update entry';
       }
 
@@ -34,7 +34,7 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
         throw 'Unable to update';
       }
 
-      const rateChart = await getRateChart(dependency, loggedInUser.email);
+      const rateChart = await getRateChart(dependency, loggedInUser._id);
 
       if (!rateChart) {
         throw 'Rate chart not found';

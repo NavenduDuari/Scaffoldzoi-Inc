@@ -25,13 +25,13 @@ export const insertUser = (dependency: Dependency, user: User): Promise<InsertOn
 
 export const updateUser = (
   dependency: Dependency,
-  email: string,
+  id: string,
   path: string[],
   updatedValue: any,
 ): Promise<UpdateWriteOpResult> => {
   const DB = dependency.mongoClient.db(conf.mongodbDBName);
   const userCollection = DB.collection(conf.collections.userCollection);
-  const query = { email };
+  const query = { _id: new ObjectID(id) };
 
   const newValue = {};
   let targetObj = newValue;
@@ -78,10 +78,10 @@ export const getRate = (dependency: Dependency, id: string): Promise<any> => {
   return userCollection.findOne({ _id: new ObjectID(id) });
 };
 
-export const getRateChart = (dependency: Dependency, email: string): Promise<any> => {
+export const getRateChart = (dependency: Dependency, userId: string): Promise<any> => {
   const DB = dependency.mongoClient.db(conf.mongodbDBName);
   const userCollection = DB.collection(conf.collections.rateCollection);
-  return userCollection.find({ email }).toArray();
+  return userCollection.find({ userId }).toArray();
 };
 
 export const deleteRate = (dependency: Dependency, id: string): Promise<any> => {

@@ -5,6 +5,7 @@ import {
   Switch,
   Route,
   RouteComponentProps,
+  Redirect,
 } from 'react-router-dom';
 import { AppContextProvider } from './appContext';
 import { GlobalStateI } from '../../rootReducer';
@@ -27,6 +28,7 @@ import Profile from '../Profile/index';
 import Header from '../../Components/Header/index';
 import Market from '../../Components/Market/index';
 import Login from '../../Components/Login/index';
+import { LogInRoutePurpose } from '../../utils/types';
 
 const mapStateToProps = (globalState: GlobalStateI): MapStateToPropsI => {
   const state = globalState.appReducer;
@@ -41,8 +43,12 @@ const mapStateToProps = (globalState: GlobalStateI): MapStateToPropsI => {
 const mapDispatchToProps = (dispatch: any): MapDispatchToPropsI => ({
   loadLocalToken: () => dispatch(loadLocalTokenAction()),
 
-  performAuth: (email: string, password: string, profileType: string) =>
-    dispatch(performAuthAction(email, password, profileType)),
+  performAuth: (
+    purpose: LogInRoutePurpose,
+    email: string,
+    password: string,
+    profileType: string
+  ) => dispatch(performAuthAction(purpose, email, password, profileType)),
 
   getAllSellers: () => dispatch(getAllSellersAction()),
 
@@ -56,6 +62,9 @@ const redirectTo = (routeProps: RouteComponentProps, url: string) => {
 class App extends React.Component<PropsI, ComponentStateI> {
   /* constructor(props: PropsI) { */
   /*   super(props); */
+  /*   this.state = { */
+  /*     redirectedToLoginPage: false, */
+  /*   }; */
   /* } */
 
   componentDidMount() {
@@ -101,30 +110,17 @@ class App extends React.Component<PropsI, ComponentStateI> {
         render={(routeProps) => {
           const profileId = routeProps.match.params.id;
           if (!this.props.token) {
-            return (
-              <Login
-                componentTitle="Signup"
-                performAuth={this.props.performAuth}
-                token={this.props.token}
-              />
-            );
+            return <Redirect to="/login" />;
           }
           return <Profile profileId={profileId} />;
         }}
       />
 
       <Route
-        exact
         path="/"
         render={(routeProps) => {
           if (!this.props.token) {
-            return (
-              <Login
-                componentTitle="Signup"
-                performAuth={this.props.performAuth}
-                token={this.props.token}
-              />
-            );
+            return <Redirect to="/login" />;
           }
           return (
             <Market
@@ -138,36 +134,24 @@ class App extends React.Component<PropsI, ComponentStateI> {
   );
 
   render() {
-    console.log(this.props.tokenStatus);
     return (
       <>
         <Router>
           <Switch>
             <Route
               path="/"
-              render={(routeProps) => {
-                /* if ( */
-                /*   this.props.tokenStatus === TokenStatus.Fetched && */
-                /*   !this.props.token && */
-                /*   !this.state.redirectedToLoginPage */
-                /* ) { */
-                /*   this.setState({ redirectedToLoginPage: true }); */
-                /*   redirectTo(routeProps, '/login'); */
-                /* } */
-                console.log('this is test');
-                return (
-                  <AppContextProvider
-                    value={{
-                      redirectTo: (url: string) => redirectTo(routeProps, url),
-                      token: this.props.token,
-                      loggedInUser: this.props.loggedInUser,
-                    }}
-                  >
-                    <Header logOut={this.props.logOut} />
-                    {this.appRoute()}
-                  </AppContextProvider>
-                );
-              }}
+              render={(routeProps) => (
+                <AppContextProvider
+                  value={{
+                    redirectTo: (url: string) => redirectTo(routeProps, url),
+                    token: this.props.token,
+                    loggedInUser: this.props.loggedInUser,
+                  }}
+                >
+                  <Header logOut={this.props.logOut} />
+                  {this.appRoute()}
+                </AppContextProvider>
+              )}
             />
           </Switch>
         </Router>

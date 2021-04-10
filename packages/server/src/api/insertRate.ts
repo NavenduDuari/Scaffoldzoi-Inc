@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Dependency, ApiResponse, ResponseType, AppDataKey, HttpStatusCode } from '../utils/types';
 import { User, Rate, WeightUnit, Currency } from '../db/model';
 import { insertRate, getRateChart } from '../db/operations';
-import { isObject } from '../utils/typeChecker';
+import { isObject, isNumber, isString } from '../utils/typeChecker';
 
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
   const resp: ApiResponse = {
@@ -14,15 +14,15 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
   };
   if (isObject(req.body)) {
     try {
-      console.log('payload :: ', req.body);
       const { orangeName, orangePrice } = req.body.payload;
-      if (!orangeName || !orangePrice) {
+      if (!isString(orangeName) || !isNumber(orangePrice)) {
         throw 'Not sufficient data';
       }
 
+      console.log('payload :: ', typeof orangeName, typeof orangePrice);
       const rate = {} as Rate;
       const loggedInUser = req[AppDataKey.LoggedInUser] as User;
-      rate.email = loggedInUser.email;
+      rate.userId = loggedInUser._id;
       rate.goodsMeta = {
         type: orangeName,
         price: orangePrice,
@@ -35,7 +35,7 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
         throw 'Insertion falied';
       }
 
-      const rateChart = await getRateChart(dependency, loggedInUser.email);
+      const rateChart = await getRateChart(dependency, loggedInUser._id);
 
       if (!rateChart) {
         throw 'Rate chart not found';

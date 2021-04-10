@@ -12,9 +12,9 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
       global: 'Something went wrong',
     },
   };
-  if (isObject(req.body)) {
+  if (isObject(req.body.payload)) {
     try {
-      const { id } = req.body;
+      const { id } = req.body.payload;
       if (!id) {
         throw 'Not sufficient data';
       }
@@ -22,7 +22,7 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
       const loggedInUser = req[AppDataKey.LoggedInUser] as User;
       const rateRow = (await getRate(dependency, id)) as Rate;
 
-      if (rateRow.email !== loggedInUser.email) {
+      if (rateRow.userId !== loggedInUser._id) {
         throw 'User not allowed to delete entry';
       }
 

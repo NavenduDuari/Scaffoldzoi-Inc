@@ -1,4 +1,4 @@
-import { UserDetailsI } from '../../utils/types';
+import { UserDetailsI, LogInRoutePurpose } from '../../utils/types';
 
 export enum ActionTypes {
   PERFORM_AUTH = 'perform-auth',
@@ -23,7 +23,12 @@ export interface MapStateToPropsI {
 
 export interface MapDispatchToPropsI {
   loadLocalToken: () => void;
-  performAuth: (email: string, password: string, profileType: string) => void;
+  performAuth: (
+    purpose: LogInRoutePurpose,
+    email: string,
+    password: string,
+    profileType: string
+  ) => void;
   getAllSellers: () => void;
   logOut: () => void;
 }
@@ -33,7 +38,7 @@ export interface ComponentPropsI {}
 export type PropsI = MapStateToPropsI & MapDispatchToPropsI & ComponentPropsI;
 
 export interface ComponentStateI {
-  redirectedToLoginPage: boolean;
+  // redirectedToLoginPage: boolean;
 }
 
 export interface StoreStateI {

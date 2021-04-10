@@ -19,7 +19,6 @@ const appReducer = (state = INITIAL_STATE, action: Action<ActionTypes>) => {
       };
 
     case ActionTypes.ON_RECEIVE_ALL_SELLERS:
-      console.log('receive seller', action);
       return {
         ...state,
         sellers: action.payload?.sellers || [],

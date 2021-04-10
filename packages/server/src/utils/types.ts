@@ -9,6 +9,11 @@ export enum ResponseType {
   Error = 'error',
 }
 
+export enum LogInRoutePurpose {
+  Signup = 'signup',
+  Login = 'login',
+}
+
 export enum HttpStatusCode {
   OK = 200,
   BAD_REQUEST = 400,

@@ -17,10 +17,10 @@ export const onReceiveUserAction = (
   },
 });
 
-export const getRateChartAction = (email: string): Action<ActionTypes> => ({
+export const getRateChartAction = (id: string): Action<ActionTypes> => ({
   type: ActionTypes.GET_RATE_CHART,
   payload: {
-    email,
+    id,
   },
 });
 
@@ -41,5 +41,18 @@ export const insertRateAction = (
   payload: {
     orangeName,
     orangePrice,
+  },
+});
+
+export const updateUserAction = (
+  id: string,
+  path: string[],
+  value: any
+): Action<ActionTypes> => ({
+  type: ActionTypes.UPDATE_USER,
+  payload: {
+    id,
+    path,
+    value,
   },
 });
