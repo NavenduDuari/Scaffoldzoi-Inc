@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 const port = conf.port || 8888;
 
-if (!conf.mongodbUserName || !conf.mongodbPass) {
+if (!conf.mLabUserName || !conf.mLabPass) {
   console.error('Env file not set correctly');
   process.exit();
 }

@@ -122,6 +122,8 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
     const { loggedInUser } = this.context;
     const isOwer = userDetails._id === loggedInUser._id;
 
+    console.log(this.state.rowIdToDelete, this.state.rowIdToEdit);
+
     return (
       <div className="profile-container">
         <div className="profile-details">
