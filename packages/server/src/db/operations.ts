@@ -12,7 +12,7 @@ export const createRequiredCollections = (dependency: Dependency): Promise<void>
       const DB = dependency.mongoClient.db(dbName);
       DB.collection(conf.collections.userCollection);
       DB.collection(conf.collections.rateCollection);
-      console.log('DB :: collections created');
+      console.log('DB :: collections created', dbName);
       resolve();
     } catch (err) {
       reject(err);

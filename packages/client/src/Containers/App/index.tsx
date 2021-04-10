@@ -60,22 +60,8 @@ const redirectTo = (routeProps: RouteComponentProps, url: string) => {
 };
 
 class App extends React.Component<PropsI, ComponentStateI> {
-  /* constructor(props: PropsI) { */
-  /*   super(props); */
-  /*   this.state = { */
-  /*     redirectedToLoginPage: false, */
-  /*   }; */
-  /* } */
-
   componentDidMount() {
-    console.log('App mounted');
     this.props.loadLocalToken();
-  }
-
-  componentDidUpdate(prevProps: PropsI) {
-    if (this.props.tokenStatus !== this.props.tokenStatus) {
-      console.log('tokenStatus changed');
-    }
   }
 
   appRoute = () => (
@@ -129,11 +115,6 @@ class App extends React.Component<PropsI, ComponentStateI> {
       <Route
         path="/"
         render={(routeProps) => {
-          console.log(
-            'about to load market :: ',
-            this.props.tokenStatus,
-            this.props.token
-          );
           if (!this.props.token) {
             return <Redirect to="/login" />;
           }
@@ -149,8 +130,6 @@ class App extends React.Component<PropsI, ComponentStateI> {
   );
 
   render() {
-    console.log('token :: ', this.props.token);
-
     if (this.props.tokenStatus === TokenStatus.YetToFetch) {
       return <></>;
     }

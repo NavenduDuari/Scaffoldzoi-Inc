@@ -69,13 +69,13 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
 
   componentDidMount() {
     this.props.getUser(this.props.profileId);
-    console.log('profile mounted');
   }
 
   componentDidUpdate(prevProps: PropsI) {
-    console.log(this.props.userDetails);
+    if (this.props.profileId !== prevProps.profileId) {
+      this.props.getUser(this.props.profileId);
+    }
     if (this.props.userDetails._id !== prevProps.userDetails._id) {
-      console.log('rate chart requested');
       this.props.getRateChart(this.props.userDetails._id);
     }
   }
@@ -112,7 +112,6 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
   };
 
   render() {
-    console.log(this.state.rowIdToDelete, this.state.rowIdToEdit);
     const {
       editProfileName,
       editProfileEmail,
@@ -121,10 +120,7 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
 
     const { userDetails } = this.props;
     const { loggedInUser } = this.context;
-
-    console.log(this.context.loggedInUser);
     const isOwer = userDetails._id === loggedInUser._id;
-    console.log('isOwer :: ', isOwer);
 
     return (
       <div className="profile-container">
@@ -245,11 +241,9 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
                     orangeName: string;
                     orangePrice: number;
                   }) => {
-                    console.log(typeof values.orangePrice);
                     const { orangeName } = values;
                     const orangePrice = Number(values.orangePrice);
                     if (isString(orangeName) && isNumber(orangePrice)) {
-                      console.log('onFinish :: ', values);
                       this.props.insertRate(orangeName, orangePrice);
                     }
                     this.formRef.current?.resetFields();

@@ -29,11 +29,6 @@ class Login extends Component<ComponentPropsI, ComponentStateI> {
     this.state = {};
   }
 
-  componentDidMount() {
-    console.log('login component did mount');
-    /* this.props.performAuth('test1@mail.com', 'test1@pass'); */
-  }
-
   componentDidUpdate(prevProps: ComponentPropsI) {
     if (!prevProps.token && this.props.token) {
       this.context.redirectTo('/');

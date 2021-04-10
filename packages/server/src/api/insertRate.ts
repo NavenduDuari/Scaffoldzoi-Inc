@@ -19,7 +19,6 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
         throw 'Not sufficient data';
       }
 
-      console.log('payload :: ', typeof orangeName, typeof orangePrice);
       const rate = {} as Rate;
       const loggedInUser = req[AppDataKey.LoggedInUser] as User;
       rate.userId = loggedInUser._id;

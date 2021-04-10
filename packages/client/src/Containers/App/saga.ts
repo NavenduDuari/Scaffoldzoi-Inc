@@ -50,7 +50,6 @@ function loadLocalToken() {
     const loggedInUser = JSON.parse(
       localStorage.getItem(LocalStorageKey.LoggedInUser) || '{}'
     ) as UserDetailsI;
-    console.log('load :: ', loggedInUser);
     requestManager.addToken.call(requestManager, token);
     yield put(onLoadLocalTokenAction(token, loggedInUser));
   };

@@ -9,14 +9,12 @@ const INITIAL_STATE: StoreStateI = {
 const profileReducer = (state = INITIAL_STATE, action: Action<ActionTypes>) => {
   switch (action.type) {
     case ActionTypes.ON_RECEIVE_USER:
-      console.log('state :: updating userDetails');
       return {
         ...state,
         userDetails: action.payload?.user || {},
       };
 
     case ActionTypes.ON_RECEIVE_RATE_CHART:
-      console.log('state :: updating rateChart');
       return {
         ...state,
         rateChart: action.payload?.rateChart || [],

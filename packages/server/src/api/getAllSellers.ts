@@ -14,8 +14,6 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
 
   try {
     const sellersFromDB = (await getAllUsers(dependency, 'profileType', ProfileType.Seller)) as User[];
-
-    console.log('getAllSellers :: ', sellersFromDB);
     if (!sellersFromDB) {
       throw 'Failed to fetch sellers';
     }

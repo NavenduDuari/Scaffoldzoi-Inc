@@ -9,10 +9,6 @@ import { ComponentPropsI } from './types';
 import { UserDetailsI } from '../../utils/types';
 
 class Header extends Component<ComponentPropsI> {
-  componentDidMount() {
-    console.log('header component did mount');
-  }
-
   getMenu = () => {
     const loggedInUser = this.context.loggedInUser as UserDetailsI;
     return (

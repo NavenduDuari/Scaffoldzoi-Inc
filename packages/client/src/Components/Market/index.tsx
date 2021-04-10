@@ -14,7 +14,6 @@ class Market extends Component<ComponentPropsI, ComponentStateI> {
   }
 
   componentDidMount() {
-    console.log('market component did mount');
     // get all sellers
     this.props.getAllSellers();
   }
@@ -29,7 +28,6 @@ class Market extends Component<ComponentPropsI, ComponentStateI> {
           className="card-container"
           key={seller._id}
           onClick={() => {
-            console.log('card clicked');
             this.context.redirectTo(`/p/${seller._id}`);
           }}
         >
@@ -43,7 +41,6 @@ class Market extends Component<ComponentPropsI, ComponentStateI> {
     });
 
   render() {
-    console.log(this.props.sellers);
     return (
       <div className="market-container">
         {this.getSellersCard(this.props.sellers)}

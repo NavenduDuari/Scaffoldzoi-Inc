@@ -16,13 +16,11 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
     const payload = JSON.parse(req.query.payload as string);
     const { id } = payload;
 
-    console.log('body :: ', payload);
     if (!id) {
       throw 'Insufficient parameter';
     }
 
     const userFromDB = (await getUser(dependency, '_id', id)) as User;
-
     if (!userFromDB) {
       throw 'User not found';
     }

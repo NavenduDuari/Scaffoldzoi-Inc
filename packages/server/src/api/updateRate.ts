@@ -14,8 +14,6 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
   };
   if (isObject(req.body.payload)) {
     try {
-      console.log('req body :: ', req.body.payload);
-
       const { id, path, value } = req.body.payload;
       if (!id || !isArray(path) || !value) {
         throw 'Insufficient parameter';
@@ -29,7 +27,6 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
       }
 
       const updateResponse = await updateRate(dependency, id, path, value);
-      console.log('updated rate :: ', updateResponse);
       if (!updateResponse.result.ok || updateResponse.result.nModified !== 1) {
         throw 'Unable to update';
       }

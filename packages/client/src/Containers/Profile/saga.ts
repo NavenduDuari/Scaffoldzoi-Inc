@@ -85,7 +85,6 @@ function getRateChart() {
       }
 
       yield put(onReceiveRateChartAction(rateChart));
-      console.log(serviceResponse);
     } catch (err) {
       console.error(err);
     }
@@ -114,7 +113,6 @@ function updateUser() {
       }
 
       yield put(onReceiveUserAction(updatedUser));
-      console.log(serviceResponse);
     } catch (err) {
       console.error(err);
     }
