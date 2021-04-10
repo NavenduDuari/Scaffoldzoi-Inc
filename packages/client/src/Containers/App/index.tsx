@@ -45,10 +45,11 @@ const mapDispatchToProps = (dispatch: any): MapDispatchToPropsI => ({
 
   performAuth: (
     purpose: LogInRoutePurpose,
+    name: string,
     email: string,
     password: string,
     profileType: string
-  ) => dispatch(performAuthAction(purpose, email, password, profileType)),
+  ) => dispatch(performAuthAction(purpose, name, email, password, profileType)),
 
   getAllSellers: () => dispatch(getAllSellersAction()),
 

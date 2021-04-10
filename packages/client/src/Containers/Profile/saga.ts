@@ -57,7 +57,6 @@ function insertRate() {
       }
 
       yield put(onReceiveRateChartAction(rateChart));
-      console.log(serviceResponse);
     } catch (err) {
       console.error(err);
     }
@@ -71,6 +70,34 @@ function getRateChart() {
 
       requestManager.addServiceConfig({
         url: '/getratechart',
+        authReq: true,
+        data: action.payload,
+      } as ServiceConfigI);
+
+      const serviceResponse: AxiosResponse = yield call(
+        requestManager.perform.bind(requestManager)
+      );
+
+      const rateChart = serviceResponse.data.data?.rateChart;
+      if (serviceResponse.status !== 200 && !rateChart) {
+        throw new Error('Request failed');
+      }
+
+      yield put(onReceiveRateChartAction(rateChart));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+}
+
+function deleteRate() {
+  return function* (action: Action<ActionTypes>) {
+    try {
+      console.log(action);
+
+      requestManager.addServiceConfig({
+        url: '/deleterate',
+        method: HttpMethod.Post,
         authReq: true,
         data: action.payload,
       } as ServiceConfigI);
@@ -124,4 +151,5 @@ export default function* profileSaga() {
   yield takeLatest(ActionTypes.GET_RATE_CHART, getRateChart());
   yield takeLatest(ActionTypes.INSERT_RATE, insertRate());
   yield takeLatest(ActionTypes.UPDATE_USER, updateUser());
+  yield takeLatest(ActionTypes.DELETE_RATE, deleteRate());
 }

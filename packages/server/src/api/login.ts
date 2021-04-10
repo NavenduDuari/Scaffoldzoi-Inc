@@ -25,7 +25,7 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
         updatedAt: Date.now(),
       } as User;
 
-      const { purpose, email, password, profileType } = req.body.payload;
+      const { purpose, name, email, password, profileType } = req.body.payload;
       if (!purpose || !email || !password) {
         throw 'Not sufficient data';
       }
@@ -46,10 +46,10 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
         }
       } else if (purpose === LogInRoutePurpose.Signup) {
         // signup
-        if (!profileType) {
+        if (!profileType || !name) {
           throw 'Not sufficient data';
         }
-        user.username = email;
+        user.username = name;
         user.profileType = profileType;
         user.password = await encryptPassword(password);
         const { result } = await insertUser(dependency, user);

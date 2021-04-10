@@ -19,26 +19,24 @@ class Market extends Component<ComponentPropsI, ComponentStateI> {
   }
 
   getSellersCard = (sellers: UserDetailsI[]) =>
-    sellers.map((seller) => {
-      if (seller._id === this.context.loggedInUser._id) {
-        return <></>;
-      }
-      return (
-        <div
-          className="card-container"
-          key={seller._id}
-          onClick={() => {
-            this.context.redirectTo(`/p/${seller._id}`);
-          }}
-        >
-          <Avatar className="avatar" size={45} icon={<UserOutlined />} />
-          <div className="title-n-description">
-            <div className="name">{seller.username}</div>
-            <div className="description">{seller.description}</div>
-          </div>
+    sellers.map((seller) => (
+      /* if (seller._id === this.context.loggedInUser._id) { */
+      /*   return <></>; */
+      /* } */
+      <div
+        className="card-container"
+        key={seller._id}
+        onClick={() => {
+          this.context.redirectTo(`/p/${seller._id}`);
+        }}
+      >
+        <Avatar className="avatar" size={45} icon={<UserOutlined />} />
+        <div className="title-n-description">
+          <div className="name">{seller.username}</div>
+          <div className="description">{seller.description}</div>
         </div>
-      );
-    });
+      </div>
+    ));
 
   render() {
     return (

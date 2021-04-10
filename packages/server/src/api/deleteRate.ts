@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import { Dependency, ApiResponse, ResponseType, AppDataKey, HttpStatusCode } from '../utils/types';
 import { User, Rate } from '../db/model';
-import { getRate, deleteRate } from '../db/operations';
+import { getRate, deleteRate, getRateChart } from '../db/operations';
 import { isObject } from '../utils/typeChecker';
+import { ObjectID } from 'mongodb';
 
 export default async (req: Request, res: Response, dependency: Dependency): Promise<void> => {
   const resp: ApiResponse = {
@@ -21,8 +22,7 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
 
       const loggedInUser = req[AppDataKey.LoggedInUser] as User;
       const rateRow = (await getRate(dependency, id)) as Rate;
-
-      if (rateRow.userId !== loggedInUser._id) {
+      if (String(rateRow.userId) !== String(loggedInUser._id)) {
         throw 'User not allowed to delete entry';
       }
 
@@ -31,9 +31,16 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
         throw 'Delete ops failed';
       }
 
+      const rateChart = await getRateChart(dependency, loggedInUser._id);
+      if (!rateChart) {
+        throw 'Rate chart not found';
+      }
+
       resp.status = ResponseType.Success;
       resp.statusCode = HttpStatusCode.OK;
-      resp.data.global = 'Success';
+      resp.data = {
+        rateChart,
+      };
     } catch (err) {
       console.error(err);
       resp.status = ResponseType.Error;

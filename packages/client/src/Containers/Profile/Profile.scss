@@ -1,7 +1,7 @@
 .profile-container {
     height: calc(100% - 64px);
     width: 100%;
-    padding: 30px 70px;
+    padding: 15px 70px;
 
     .profile-details {
         height: 30%;
@@ -16,7 +16,12 @@
             flex-direction: column;
             justify-content: space-around;
 
-            div{
+            div {
+                display: flex;
+                align-items: center;
+                width: 75%;
+                height: 25px;
+
                 span {
                     font-size: 16px;
                     font-weight: 900;
@@ -27,6 +32,9 @@
                     margin-left: 10px;
                     font-size: 15px;
                 }
+            }
+
+            .name {
             }
 
             .password {
@@ -51,10 +59,9 @@
 
 
         .table-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            height: 45px;
+            height: 90px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
 
             .table-col {
                 width: 30%;
@@ -63,7 +70,7 @@
             .ant-form {
                 width: 100%;
                 display: flex;
-                align-items: center;
+                align-items: flex-start;
                 justify-content: space-around;
             }
         }
@@ -71,10 +78,15 @@
         .table-col {
             width: 33%;
             text-align: center;
+
+            .rate-edit-btn {
+                margin-right: 20px;
+            }
+
         }
 
         .table-body {
-            height: calc(100% - 90px);
+            height: calc(100% - 125px);
             overflow: auto;
 
 

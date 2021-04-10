@@ -22,15 +22,17 @@ import {
   getRateChartAction,
   insertRateAction,
   updateUserAction,
+  deleteRateAction,
 } from './action';
 import { ProfileType, RateI, UserDetailsI } from '../../utils/types';
 import { isNumber, isString } from '../../utils/type-checker';
 
-const checkPrice = (_: any, value: { number: number }) => {
-  if (value.number > 0) {
+const checkPrice = (_: any, price: string) => {
+  const num = Number(price);
+  if (isNumber(num) && num > 0) {
     return Promise.resolve();
   }
-  return Promise.reject();
+  return Promise.reject(new Error('Price must be greater than zero!'));
 };
 
 const mapStateToProps = (globalState: GlobalStateI): MapStateToPropsI => {
@@ -49,6 +51,8 @@ const mapDispatchToProps = (dispatch: any): MapDispatchToPropsI => ({
   insertRate: (orangeName: string, orangePrice: number) =>
     dispatch(insertRateAction(orangeName, orangePrice)),
 
+  deleteRate: (id: string) => dispatch(deleteRateAction(id)),
+
   updateUser: (id: string, path: string[], value: any) =>
     dispatch(updateUserAction(id, path, value)),
 });
@@ -60,7 +64,6 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
     super(props);
     this.state = {
       rowIdToEdit: '',
-      rowIdToDelete: '',
       editProfileName: false,
       editProfileDescription: false,
       editProfileEmail: false,
@@ -84,7 +87,7 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
     const isOwer = this.props.userDetails._id === this.context.loggedInUser._id;
     return (
       <div className="table-row">
-        {this.state.rowIdToEdit !== '--row_id' ? (
+        {this.state.rowIdToEdit !== '__row_id' ? (
           <>
             <div className="table-col">{rate.goodsMeta.type}</div>
             <div className="table-col">{rate.goodsMeta.price}</div>
@@ -98,12 +101,15 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
         {isOwer && (
           <div className="table-col">
             <Button
+              className="rate-edit-btn"
               icon={<EditOutlined />}
               onClick={() => this.setState({ rowIdToEdit: '__row_id' })}
             />
             <Button
+              className="rate-delete-btn"
+              danger
               icon={<DeleteOutlined />}
-              onClick={() => this.setState({ rowIdToDelete: '__row_id' })}
+              onClick={() => this.props.deleteRate(rate._id)}
             />
           </div>
         )}
@@ -122,7 +128,7 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
     const { loggedInUser } = this.context;
     const isOwer = userDetails._id === loggedInUser._id;
 
-    console.log(this.state.rowIdToDelete, this.state.rowIdToEdit);
+    console.log(this.state.rowIdToEdit);
 
     return (
       <div className="profile-container">
@@ -148,7 +154,7 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
               ) : (
                 userDetails.username
               )}
-              {isOwer && (
+              {isOwer && !editProfileName && (
                 <EditOutlined
                   className="edit-icon"
                   onClick={() => this.setState({ editProfileName: true })}
@@ -176,7 +182,7 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
               ) : (
                 userDetails.description
               )}
-              {isOwer && (
+              {isOwer && !editProfileDescription && (
                 <EditOutlined
                   className="edit-icon"
                   onClick={() =>
@@ -204,7 +210,7 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
               ) : (
                 userDetails.email
               )}
-              {isOwer && (
+              {isOwer && !editProfileEmail && (
                 <EditOutlined
                   className="edit-icon"
                   onClick={() => this.setState({ editProfileEmail: true })}
@@ -223,7 +229,7 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
             )}
           </div>
         </div>
-        {(loggedInUser as UserDetailsI).profileType === ProfileType.Seller && (
+        {userDetails.profileType === ProfileType.Seller && (
           <div className="rate-chart">
             <div className="table-header">
               <div className="table-col">Orange Name</div>
@@ -247,14 +253,21 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
                     const orangePrice = Number(values.orangePrice);
                     if (isString(orangeName) && isNumber(orangePrice)) {
                       this.props.insertRate(orangeName, orangePrice);
+                      this.formRef.current?.resetFields();
                     }
-                    this.formRef.current?.resetFields();
+                    console.log(
+                      this.formRef.current?.getFieldValue('orangePrice')
+                    );
                   }}
                 >
                   <Form.Item className="table-col" name="orangeName">
                     <Input placeholder="Enter orange name" />
                   </Form.Item>
-                  <Form.Item className="table-col" name="orangePrice">
+                  <Form.Item
+                    className="table-col"
+                    name="orangePrice"
+                    rules={[{ validator: checkPrice }]}
+                  >
                     <Input placeholder="Enter orange price" />
                   </Form.Item>
                   <Form.Item className="table-col">

@@ -44,6 +44,13 @@ export const insertRateAction = (
   },
 });
 
+export const deleteRateAction = (id: string): Action<ActionTypes> => ({
+  type: ActionTypes.DELETE_RATE,
+  payload: {
+    id,
+  },
+});
+
 export const updateUserAction = (
   id: string,
   path: string[],

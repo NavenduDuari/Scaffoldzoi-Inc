@@ -1,3 +1,11 @@
+## TODO
+    * Show error on login/signup page
+    * Upload picture
+    * Change password
+    * Edit rates
+
+---
+
 ## Client
 React.js
 

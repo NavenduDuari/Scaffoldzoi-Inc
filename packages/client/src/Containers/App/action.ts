@@ -3,6 +3,7 @@ import { Action, UserDetailsI, LogInRoutePurpose } from '../../utils/types';
 
 export const performAuthAction = (
   purpose: LogInRoutePurpose,
+  name: string,
   email: string,
   password: string,
   profileType: string
@@ -10,6 +11,7 @@ export const performAuthAction = (
   type: ActionTypes.PERFORM_AUTH,
   payload: {
     purpose,
+    name,
     email,
     password,
     profileType,

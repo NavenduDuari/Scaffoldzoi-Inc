@@ -44,6 +44,7 @@ class Login extends Component<ComponentPropsI, ComponentStateI> {
             {...layout}
             validateMessages={validateMessages}
             onFinish={(values: {
+              name: string;
               email: string;
               password: string;
               profileType: string;
@@ -54,6 +55,7 @@ class Login extends Component<ComponentPropsI, ComponentStateI> {
                   : LogInRoutePurpose.Signup;
               this.props.performAuth(
                 purpose,
+                values.name,
                 values.email,
                 values.password,
                 values.profileType
@@ -63,13 +65,24 @@ class Login extends Component<ComponentPropsI, ComponentStateI> {
               console.log(e);
             }}
           >
+            {this.props.componentTitle === 'Signup' && (
+              <Form.Item
+                name="name"
+                label="Name"
+                hasFeedback
+                rules={[{ required: true }]}
+              >
+                <Input />
+              </Form.Item>
+            )}
             <Form.Item
               name="email"
               label="Email"
               hasFeedback
+              help={null}
               rules={[{ required: true }, { type: 'email' }]}
             >
-              <Input />
+              <Input placeholder="name@example.com" />
             </Form.Item>
             <Form.Item
               name="password"

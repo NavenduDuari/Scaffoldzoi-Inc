@@ -10,6 +10,11 @@
     align-items: center;
     justify-content: center;
 
+    .home-icon {
+        font-size: 30px;
+        margin-right: 20px;
+    }
+
     .company-name {
         font-size: 30px;
         font-weight: 900;
@@ -18,6 +23,20 @@
     }
 
     .user-avatar {
+        margin-left: 10px;
+        margin-right: 3px;
+    }
+
+    .ant-dropdown-trigger {
+        display: flex;
+        align-items: center;
         cursor: pointer;
+
+        .user-name {
+        }
+
+        .anticon {
+            font-size: 15px;
+        }
     }
 }

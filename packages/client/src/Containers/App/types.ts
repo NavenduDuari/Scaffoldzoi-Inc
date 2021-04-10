@@ -25,6 +25,7 @@ export interface MapDispatchToPropsI {
   loadLocalToken: () => void;
   performAuth: (
     purpose: LogInRoutePurpose,
+    name: string,
     email: string,
     password: string,
     profileType: string
