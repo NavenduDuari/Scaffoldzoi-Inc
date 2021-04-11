@@ -126,7 +126,13 @@ class RateChart extends Component<ComponentPropsI, ComponentStateI> {
           {isProfileOwner && <div className="table-col">Actions</div>}
         </div>
         <div className="table-body">
-          {this.props.rateChart.map((r: RateI) => this.getRateChartRow(r))}
+          {this.props.rateChart.length > 0 ? (
+            <>
+              {this.props.rateChart.map((r: RateI) => this.getRateChartRow(r))}
+            </>
+          ) : (
+            <div className="nothing-here">Oops! Nothing here</div>
+          )}
         </div>
 
         {isProfileOwner && (

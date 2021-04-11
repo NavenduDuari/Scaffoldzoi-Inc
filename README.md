@@ -6,7 +6,10 @@
 - [X] Different component for RateChart
 - [X] Edit rates
 - [ ] Show error on login/signup page
+- [ ] Confirmation before deleting
+- [ ] Add loader while fetching RateChart
 - [ ] Different service for login and signup
+- [ ] Profile info sync with logged in user
 - [ ] Remove unnecessary Class Component
 - [ ] Upload picture
 - [ ] Change password
