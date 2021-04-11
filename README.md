@@ -3,10 +3,13 @@
 ---
 
 ### TODO
+- [X] Different component for RateChart
+- [X] Edit rates
 - [ ] Show error on login/signup page
+- [ ] Different service for login and signup
+- [ ] Remove unnecessary Class Component
 - [ ] Upload picture
 - [ ] Change password
-- [ ] Edit rates
 - [ ] Unit Test
 - [ ] Considerations.md
 

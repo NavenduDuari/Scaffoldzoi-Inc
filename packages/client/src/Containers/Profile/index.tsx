@@ -7,7 +7,6 @@ import Input from 'antd/lib/input';
 import Avatar from 'antd/lib/avatar';
 import UserOutlined from '@ant-design/icons/UserOutlined';
 import EditOutlined from '@ant-design/icons/EditOutlined';
-import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import Context from '../App/appContext';
 import {
   MapDispatchToPropsI,
@@ -23,17 +22,10 @@ import {
   insertRateAction,
   updateUserAction,
   deleteRateAction,
+  updateRateAction,
 } from './action';
-import { ProfileType, RateI, UserDetailsI } from '../../utils/types';
-import { isNumber, isString } from '../../utils/type-checker';
-
-const checkPrice = (_: any, price: string) => {
-  const num = Number(price);
-  if (isNumber(num) && num > 0) {
-    return Promise.resolve();
-  }
-  return Promise.reject(new Error('Price must be greater than zero!'));
-};
+import { ProfileType } from '../../utils/types';
+import RateChart from '../../Components/RateChart/index';
 
 const mapStateToProps = (globalState: GlobalStateI): MapStateToPropsI => {
   const state = globalState.profileReducer;
@@ -53,17 +45,17 @@ const mapDispatchToProps = (dispatch: any): MapDispatchToPropsI => ({
 
   deleteRate: (id: string) => dispatch(deleteRateAction(id)),
 
+  updateRate: (id: string, jobs: { path: string[]; value: any }[]) =>
+    dispatch(updateRateAction(id, jobs)),
+
   updateUser: (id: string, path: string[], value: any) =>
     dispatch(updateUserAction(id, path, value)),
 });
 
 class Profile extends React.Component<PropsI, ComponentStateI> {
-  formRef = React.createRef<FormInstance>();
-
   constructor(props: PropsI) {
     super(props);
     this.state = {
-      rowIdToEdit: '',
       editProfileName: false,
       editProfileDescription: false,
       editProfileEmail: false,
@@ -83,40 +75,6 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
     }
   }
 
-  getRateChartRow = (rate: RateI) => {
-    const isOwer = this.props.userDetails._id === this.context.loggedInUser._id;
-    return (
-      <div className="table-row">
-        {this.state.rowIdToEdit !== '__row_id' ? (
-          <>
-            <div className="table-col">{rate.goodsMeta.type}</div>
-            <div className="table-col">{rate.goodsMeta.price}</div>
-          </>
-        ) : (
-          <>
-            <Input value="orange 220" />
-            <Input value="12" />
-          </>
-        )}
-        {isOwer && (
-          <div className="table-col">
-            <Button
-              className="rate-edit-btn"
-              icon={<EditOutlined />}
-              onClick={() => this.setState({ rowIdToEdit: '__row_id' })}
-            />
-            <Button
-              className="rate-delete-btn"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => this.props.deleteRate(rate._id)}
-            />
-          </div>
-        )}
-      </div>
-    );
-  };
-
   render() {
     const {
       editProfileName,
@@ -127,8 +85,6 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
     const { userDetails } = this.props;
     const { loggedInUser } = this.context;
     const isOwer = userDetails._id === loggedInUser._id;
-
-    console.log(this.state.rowIdToEdit);
 
     return (
       <div className="profile-container">
@@ -230,55 +186,13 @@ class Profile extends React.Component<PropsI, ComponentStateI> {
           </div>
         </div>
         {userDetails.profileType === ProfileType.Seller && (
-          <div className="rate-chart">
-            <div className="table-header">
-              <div className="table-col">Orange Name</div>
-              <div className="table-col">Price (₹/Kg)</div>
-              {isOwer && <div className="table-col">Actions</div>}
-            </div>
-            <div className="table-body">
-              {this.props.rateChart.map((r: RateI) => this.getRateChartRow(r))}
-            </div>
-
-            {isOwer && (
-              <div className="table-footer">
-                <Form
-                  ref={this.formRef}
-                  layout="inline"
-                  onFinish={(values: {
-                    orangeName: string;
-                    orangePrice: number;
-                  }) => {
-                    const { orangeName } = values;
-                    const orangePrice = Number(values.orangePrice);
-                    if (isString(orangeName) && isNumber(orangePrice)) {
-                      this.props.insertRate(orangeName, orangePrice);
-                      this.formRef.current?.resetFields();
-                    }
-                    console.log(
-                      this.formRef.current?.getFieldValue('orangePrice')
-                    );
-                  }}
-                >
-                  <Form.Item className="table-col" name="orangeName">
-                    <Input placeholder="Enter orange name" />
-                  </Form.Item>
-                  <Form.Item
-                    className="table-col"
-                    name="orangePrice"
-                    rules={[{ validator: checkPrice }]}
-                  >
-                    <Input placeholder="Enter orange price" />
-                  </Form.Item>
-                  <Form.Item className="table-col">
-                    <Button type="primary" htmlType="submit">
-                      ADD
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </div>
-            )}
-          </div>
+          <RateChart
+            rateChart={this.props.rateChart}
+            insertRate={this.props.insertRate}
+            deleteRate={this.props.deleteRate}
+            updateRate={this.props.updateRate}
+            isProfileOwner={isOwer}
+          />
         )}
       </div>
     );

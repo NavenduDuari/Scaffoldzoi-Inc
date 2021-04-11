@@ -34,19 +34,16 @@ export const updateUser = (
 ): Promise<UpdateWriteOpResult> => {
   const DB = dependency.mongoClient.db(dbName);
   const userCollection = DB.collection(conf.collections.userCollection);
+  userCollection.createIndex({ email: 1 }, { unique: true });
   const query = { _id: new ObjectID(id) };
 
   const newValue = {};
-  let targetObj = newValue;
-  for (let i = 0; i < path.length; i++) {
-    const key = path[i];
-    if (i === path.length - 1) {
-      targetObj[key] = updatedValue;
-    } else {
-      targetObj[key] = {};
-      targetObj = targetObj[key];
-    }
+  let key = path[0];
+  for (let i = 1; i < path.length; i++) {
+    key = `${key}.${path[i]}`;
   }
+
+  newValue[key] = updatedValue;
 
   return userCollection.updateOne(query, {
     $set: newValue,
@@ -104,16 +101,12 @@ export const updateRate = (
   const query = { _id: new ObjectID(id) };
 
   const newValue = {};
-  let targetObj = newValue;
-  for (let i = 0; i < path.length; i++) {
-    const key = path[i];
-    if (i === path.length - 1) {
-      targetObj[key] = updatedValue;
-    } else {
-      targetObj[key] = {};
-      targetObj = targetObj[key];
-    }
+  let key = path[0];
+  for (let i = 1; i < path.length; i++) {
+    key = `${key}.${path[i]}`;
   }
+
+  newValue[key] = updatedValue;
 
   return userCollection.updateOne(query, {
     $set: newValue,

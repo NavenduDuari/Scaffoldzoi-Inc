@@ -14,21 +14,26 @@ export default async (req: Request, res: Response, dependency: Dependency): Prom
   };
   if (isObject(req.body.payload)) {
     try {
-      const { id, path, value } = req.body.payload;
-      if (!id || !isArray(path) || !value) {
+      const { id, jobs } = req.body.payload;
+      if (!id || !isArray(jobs)) {
         throw 'Insufficient parameter';
       }
+
+      console.log('jobs :: ', jobs);
 
       const loggedInUser = req[AppDataKey.LoggedInUser] as User;
       const rateRow = (await getRate(dependency, id)) as Rate;
 
-      if (rateRow.userId !== loggedInUser._id) {
+      if (String(rateRow.userId) !== String(loggedInUser._id)) {
         throw 'User not allowed to update entry';
       }
 
-      const updateResponse = await updateRate(dependency, id, path, value);
-      if (!updateResponse.result.ok || updateResponse.result.nModified !== 1) {
-        throw 'Unable to update';
+      const updateResponses = await Promise.all(jobs.map((job) => updateRate(dependency, id, job.path, job.value)));
+
+      for (const updateResponse of updateResponses) {
+        if (!updateResponse.result.ok || updateResponse.result.nModified !== 1) {
+          throw 'Unable to update';
+        }
       }
 
       const rateChart = await getRateChart(dependency, loggedInUser._id);
