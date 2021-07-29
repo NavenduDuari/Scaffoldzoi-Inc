@@ -1,6 +1,3 @@
-# [Click to see live](http://13.232.26.195/)
-
----
 
 ### TODO
 - [X] Different component for RateChart
